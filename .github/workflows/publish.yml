@@ -70,7 +70,7 @@ jobs:
     permissions:
       id-token: write  # MANDATORY for OIDC
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist/
@@ -92,7 +92,7 @@ jobs:
       id-token: write  # MANDATORY for OIDC
       # No `contents: write` — we don't push back to the repo from this job
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist/
