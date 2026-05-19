@@ -1,0 +1,86 @@
+"""Tests for {{ name }} plugin (enterprise tier — covers permissions + isolation).
+
+F4.3: meaningful tests — Plugin Protocol conformance, manifest validation,
+permissions declaration, isolation level, and tool registration (no placeholder
+no-op bodies).
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+
+PLUGIN_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PLUGIN_ROOT))
+
+from dryade_plugins_sdk import IsolationLevel, ManifestV2, Plugin  # noqa: E402
+from dryade_plugins_sdk.testing import FakeHost  # noqa: E402
+
+from plugin import example_lookup, plugin  # noqa: E402
+
+
+def test_plugin_satisfies_protocol():
+    """{{ name }} must structurally satisfy Plugin Protocol."""
+    assert isinstance(plugin, Plugin)
+
+
+def test_plugin_metadata():
+    """Required Plugin attributes must be well-formed."""
+    assert plugin.name == "{{ name }}"
+    assert plugin.version == "0.1.0"
+    assert plugin.description == "{{ description }}"
+    assert plugin.core_version_constraint.startswith(">=")
+
+
+def test_manifest_validates_against_v2_schema():
+    """The plugin's dryade.json must validate against the v2 schema."""
+    manifest_path = PLUGIN_ROOT / "dryade.json"
+    assert manifest_path.exists()
+    data = json.loads(manifest_path.read_text())
+    known_fields = ManifestV2.__dataclass_fields__
+    manifest = ManifestV2(**{k: v for k, v in data.items() if k in known_fields})
+    assert manifest.manifest_version == "2.0"
+    assert manifest.required_tier == "{{ tier }}"
+
+
+def test_manifest_declares_permissions():
+    """Enterprise plugin must declare required permissions in the manifest."""
+    manifest_path = PLUGIN_ROOT / "dryade.json"
+    data = json.loads(manifest_path.read_text())
+    assert "permissions" in data
+    assert isinstance(data["permissions"], list)
+    assert len(data["permissions"]) > 0, (
+        "Enterprise tier scaffold should declare at least one permission"
+    )
+
+
+def test_manifest_declares_sandbox_policy():
+    """Enterprise plugin must reference a sandbox_policy yaml file."""
+    manifest_path = PLUGIN_ROOT / "dryade.json"
+    data = json.loads(manifest_path.read_text())
+    assert "sandbox_policy" in data
+    assert data["sandbox_policy"].endswith(".yaml") or data["sandbox_policy"].endswith(".yml")
+
+
+def test_tool_registered_with_host():
+    """register() must register example_lookup with the host registry."""
+    host = FakeHost()
+    plugin.register(host.registry)
+    assert "example_lookup" in host.registry.tools
+
+
+def test_plugin_required_isolation_is_known_level():
+    """required_isolation() must return a valid IsolationLevel enum value."""
+    level = plugin.required_isolation()
+    assert isinstance(level, IsolationLevel)
+
+
+def test_plugin_full_lifecycle():
+    """register → startup → shutdown must complete without exceptions."""
+    host = FakeHost()
+    host.load(plugin)
+    assert plugin in host.loaded
+    host.shutdown()
+    assert plugin not in host.loaded

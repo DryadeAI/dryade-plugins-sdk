@@ -1,0 +1,24 @@
+# {{ name }}
+
+{{ description }}
+
+## Tier
+
+`{{ tier }}` — this plugin consumes one of the end-user's `custom_plugin_slots`.
+Design for high value per slot: Starter accounts get a small number of slots,
+Enterprise accounts get many. See https://docs.dryade.ai/plugins/tiers for the
+exact slot math per tier.
+
+## Dev loop
+
+    pip install -e .[dev]
+    pytest
+    dryade plugin validate .
+    dryade plugin package .
+
+`dryade plugin package` produces `dist/{{ name }}-0.1.0.dryadepkg` — a signed
+artifact you submit to the marketplace.
+
+## License
+
+{% if year %}(c) {{ year }} {{ author }}.{% else %}(c) {{ author }}.{% endif %} See LICENSE.

@@ -1,0 +1,24 @@
+{
+  "manifest_version": "2.0",
+  "name": "{{ name }}",
+  "version": "0.1.0",
+  "description": "{{ description }}",
+  "required_tier": "{{ tier }}",
+  "author": "{{ author }}",
+  "core_version_constraint": "{{ core_version_constraint | default('>=1.0.0,<2.0.0') }}",
+  "has_ui": {{ has_ui | lower }},
+  "agents": [],
+  "tools": [
+    {
+      "name": "example_lookup",
+      "description": "Stub tool — replace with your plugin's first real tool.",
+      "input_schema": {"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
+      "output_schema": {"type": "object", "properties": {"result": {"type": "string"}}}
+    }
+  ],
+  "routes": [],
+  "permissions": [],
+  "api_paths": [],
+  "plugin_dependencies": [],
+  "tags": []
+}

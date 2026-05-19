@@ -32,7 +32,7 @@
 ## Quickstart
 
 ```bash
-uv tool install dryade-cli
+uv tool install 'dryade-plugins-sdk[cli]'
 dryade plugin new my_plugin --tier starter
 cd my_plugin
 dryade plugin validate

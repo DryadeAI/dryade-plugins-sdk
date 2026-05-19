@@ -1,0 +1,72 @@
+"""{{ name }} plugin implementation (enterprise tier — RBAC + Leash sandbox).
+
+Demonstrates how to declare permissions and reference the Leash Protocol from
+the SDK for sandbox-aware code paths. Pure-SDK — never reaches into the
+Dryade host package.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Iterable, Mapping
+from typing import Any
+
+from dryade_plugins_sdk import HealthCheck, IsolationLevel, Leash, ManageableComponent, tool
+
+
+@tool(
+    name="example_lookup",
+    description="Stub tool — replace with your plugin's first real tool.",
+)
+def example_lookup(query: str) -> dict[str, str]:
+    """Stub implementation — returns the query as the result."""
+    return {"result": f"stub-result-for: {query}"}
+
+
+class {{ class_name }}Plugin:
+    """{{ description }}
+
+    Declared permissions: database, network. The plugin loader will only grant
+    these capabilities if the user's tier and the signed allowlist permit them.
+
+    Sandbox: the plugin ships a sandbox_policy reference (sandbox.yaml) for the
+    Leash runtime to enforce process / filesystem / network isolation.
+    """
+
+    name = "{{ name }}"
+    version = "0.1.0"
+    description = "{{ description }}"
+    core_version_constraint = "{{ core_version_constraint | default('>=1.0.0,<2.0.0') }}"
+
+    def __init__(self) -> None:
+        self._leash: Leash | None = None
+
+    def register(self, registry: Any) -> None:
+        """Register tools with the host."""
+        registry.register(example_lookup)
+
+    def startup(self, **kwargs: Any) -> None:
+        """Pick up the host-injected Leash (if available) for sandbox-aware runs."""
+        leash = kwargs.get("leash")
+        if leash is not None and isinstance(leash, Leash):
+            self._leash = leash
+
+    def shutdown(self) -> None:
+        """Release Leash reference on shutdown."""
+        self._leash = None
+
+    def required_isolation(self) -> IsolationLevel:
+        """Declare the minimum isolation this plugin needs.
+
+        The host MAY upgrade to a stricter level (e.g. CONTAINER) based on the
+        signed allowlist; the plugin must always run at or above this level.
+        """
+        return IsolationLevel.PROCESS
+
+    def get_health_checks(self) -> Mapping[str, HealthCheck]:
+        return {}
+
+    def get_manageable_components(self) -> Iterable[ManageableComponent]:
+        return []
+
+
+plugin = {{ class_name }}Plugin()
