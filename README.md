@@ -8,13 +8,13 @@
 
 <p align="center">
   <strong>Pure-Protocol Python SDK for authoring Dryade plugins.</strong><br>
-  Zero <code>core.*</code> imports. Hash-conformant. DSUL-licensed.
+  Zero <code>core.*</code> imports. Hash-conformant. MIT-licensed.
 </p>
   <a href="https://github.com/DryadeAI/dryade-plugins-sdk/actions/workflows/ci.yml"><img src="https://github.com/DryadeAI/dryade-plugins-sdk/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://pypi.org/project/dryade-plugins-sdk/"><img src="https://img.shields.io/pypi/v/dryade-plugins-sdk.svg" alt="PyPI"></a>
   <a href="https://pypi.org/project/dryade-plugins-sdk/"><img src="https://img.shields.io/pypi/pyversions/dryade-plugins-sdk.svg" alt="Python versions"></a>
   <a href="https://api.securityscorecards.dev/projects/github.com/DryadeAI/dryade-plugins-sdk"><img src="https://api.securityscorecards.dev/projects/github.com/DryadeAI/dryade-plugins-sdk/badge" alt="OpenSSF Scorecard"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-DSUL-blue.svg" alt="License: DSUL"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
   <a href="https://dryade.ai/discord"><img src="https://img.shields.io/badge/Discord-%23plugin--authors-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
   <a href="#contributors"><img src="https://img.shields.io/badge/all_contributors-1-orange.svg" alt="All Contributors"></a>
 </p>
@@ -89,7 +89,7 @@ See [SECURITY.md](SECURITY.md). Do not file public issues for vulnerabilities �
 
 ## License
 
-[DSUL](LICENSE) (Dryade Source-Usage License). Source-available with explicit usage terms — see LICENSE for details.
+[MIT](LICENSE). Use it, modify it, ship it — no Dryade approval needed. See LICENSE for full terms.
 
 ## Contributors
 

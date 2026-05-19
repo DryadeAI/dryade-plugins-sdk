@@ -47,10 +47,10 @@ jobs:
         run: python -m pip install --upgrade pip build
       - name: Build sdist + wheel
         run: python -m build
-      - name: Verify license metadata (LicenseRef-DSUL must appear in wheel)
+      - name: Verify license metadata (MIT must appear in wheel)
         run: |
           unzip -p dist/*.whl '*/METADATA' | grep -E '^(License|License-Expression)'
-          unzip -p dist/*.whl '*/METADATA' | grep -q 'LicenseRef-DSUL'
+          unzip -p dist/*.whl '*/METADATA' | grep -qE 'License(-Expression)?:\s*MIT'
       - uses: actions/upload-artifact@v4
         with:
           name: dist

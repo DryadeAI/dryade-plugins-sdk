@@ -26,7 +26,7 @@
 
 ## Notes
 
-- License: DSUL (source-available, see LICENSE)
+- License: MIT (source-available, see LICENSE)
 - Python: 3.11+
 - Contract version: 4 (SHA-256 + SHA3-256 dual hash)
 - Marketplace: https://dryade.ai/marketplace

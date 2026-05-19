@@ -5,7 +5,7 @@ site_author: Dryade
 repo_url: https://github.com/DryadeAI/dryade-plugins-sdk
 repo_name: DryadeAI/dryade-plugins-sdk
 edit_uri: edit/main/docs/
-copyright: Dryade · DSUL · source-available
+copyright: Dryade · MIT · source-available
 
 theme:
   name: material
