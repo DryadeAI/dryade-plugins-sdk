@@ -1,7 +1,15 @@
 <p align="center">
-  <img src=".github/images/og-card.svg" alt="dryade-plugins-sdk" width="600">
+  <a href="https://dryade.ai">
+    <img src=".github/images/dryade-logo.svg" alt="Dryade" height="96">
+  </a>
 </p>
 
+<h1 align="center">dryade-plugins-sdk</h1>
+
+<p align="center">
+  <strong>Pure-Protocol Python SDK for authoring Dryade plugins.</strong><br>
+  Zero <code>core.*</code> imports. Hash-conformant. DSUL-licensed.
+</p>
 <h1 align="center">dryade-plugins-sdk</h1>
 
 <p align="center">
