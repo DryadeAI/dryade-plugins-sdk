@@ -41,7 +41,7 @@ dryade plugin package
 
 Five commands. Your `.dryadepkg` is ready to submit to the [Dryade marketplace](https://dryade.ai/marketplace) or share directly.
 
-Full guide: **[sdk.dryade.ai/getting-started](https://sdk.dryade.ai/getting-started/)**
+Full guide: **[dryade.ai/docs/sdk/getting-started](https://dryade.ai/docs/sdk/getting-started)**
 
 ## Used by
 
@@ -63,7 +63,7 @@ gh repo create my-plugin --template DryadeAI/dryade-plugin-template
 
 ## Documentation
 
-- **[sdk.dryade.ai](https://sdk.dryade.ai/)** — full docs site (Getting Started, Concepts, API Reference, CLI Reference, Cookbook, FAQ, Migration)
+- **[dryade.ai/docs/sdk/](https://dryade.ai/docs/sdk/)** — full docs site (Getting Started, Concepts, API Reference, CLI Reference, Cookbook, FAQ, Migration)
 - **[Security model for authors](docs/security.md)** — what you MUST know about hashing, signing, and tier slots
 - **[Contract version](docs/concepts.md#contract-version)** — current SDK `CONTRACT_VERSION` and how it gates compatibility
 
