@@ -84,7 +84,7 @@ The bar:
 - Tests with ≥3 meaningful assertions (`pytest` from cwd green).
 - Manifest validates against the v2 schema.
 - README ≤30 lines.
-- No `core.*` imports.
+- No host-runtime imports.
 
 See [CONTRIBUTING.md](https://github.com/DryadeAI/dryade-plugins-sdk/blob/main/CONTRIBUTING.md)
 for the PR flow.

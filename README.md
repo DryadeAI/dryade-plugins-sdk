@@ -8,19 +8,19 @@
 
 <p align="center">
   <strong>Pure-Protocol Python SDK for authoring Dryade plugins.</strong><br>
-  Zero <code>core.*</code> imports. Hash-conformant. MIT-licensed.
+  Zero host-runtime imports. Hash-conformant. MIT-licensed.
 </p>
   <a href="https://github.com/DryadeAI/dryade-plugins-sdk/actions/workflows/ci.yml"><img src="https://github.com/DryadeAI/dryade-plugins-sdk/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://pypi.org/project/dryade-plugins-sdk/"><img src="https://img.shields.io/pypi/v/dryade-plugins-sdk.svg" alt="PyPI"></a>
   <a href="https://pypi.org/project/dryade-plugins-sdk/"><img src="https://img.shields.io/pypi/pyversions/dryade-plugins-sdk.svg" alt="Python versions"></a>
   <a href="https://api.securityscorecards.dev/projects/github.com/DryadeAI/dryade-plugins-sdk"><img src="https://api.securityscorecards.dev/projects/github.com/DryadeAI/dryade-plugins-sdk/badge" alt="OpenSSF Scorecard"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
-  <a href="https://dryade.ai/discord"><img src="https://img.shields.io/badge/Discord-%23plugin--authors-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://github.com/DryadeAI/dryade-plugins-sdk/discussions"><img src="https://img.shields.io/github/discussions/DryadeAI/dryade-plugins-sdk?logo=github&label=Discussions&color=5865F2" alt="Discussions"></a>
   <a href="#contributors"><img src="https://img.shields.io/badge/all_contributors-1-orange.svg" alt="All Contributors"></a>
 </p>
 
 <p align="center">
-  <img src=".demo/demo.gif" alt="dryade plugin new my-plugin then validate then package in 60 seconds" width="800">
+  
 </p>
 
 ## Why dryade-plugins-sdk
@@ -69,7 +69,7 @@ gh repo create my-plugin --template DryadeAI/dryade-plugin-template
 
 ## Community
 
-- **Discord** — [`#plugin-authors`](https://dryade.ai/discord) — ask questions, share what you built
+- **Discord** — [GitHub Discussions](https://github.com/DryadeAI/dryade-plugins-sdk/discussions) — ask questions, share what you built
 - **GitHub Discussions** — [Q&A](https://github.com/DryadeAI/dryade-plugins-sdk/discussions/categories/q-a) · [Show & Tell](https://github.com/DryadeAI/dryade-plugins-sdk/discussions/categories/show-and-tell) · [Ideas](https://github.com/DryadeAI/dryade-plugins-sdk/discussions/categories/ideas)
 - **Twitter/X** — follow [@DryadeAI](https://twitter.com/DryadeAI) for SDK announcements
 
@@ -86,6 +86,21 @@ We welcome contributions. Start with [CONTRIBUTING.md](CONTRIBUTING.md). Good fi
 ## Reporting security issues
 
 See [SECURITY.md](SECURITY.md). Do not file public issues for vulnerabilities — use [GitHub Security Advisories](https://github.com/DryadeAI/dryade-plugins-sdk/security/advisories/new) or email security@dryade.ai.
+
+
+## Publishing to the marketplace
+
+Authoring a plugin is free. Submitting it to the Dryade marketplace is free. Where you'll see numbers:
+
+- **Listing** — free for every tier. There is no per-listing fee.
+- **Free / community plugins** — list and distribute at no cost. Author keeps full attribution; no revenue share.
+- **Paid plugins** (team and enterprise tiers) — Dryade takes a **30% platform fee**; the author keeps **70%** of net (after payment processor + tax).
+- **Payouts** — monthly via Stripe Connect once your accumulated balance crosses **$50**. Authors in non-Stripe geographies can opt into bank transfer at the same threshold.
+- **Review SLA** — first submission: 5 business days. Updates to an already-approved plugin: 24 hours. Security patches: expedited to next business day.
+
+The review checks: manifest validates against the v2 schema; the `.dryadepkg` is signed with a registered author key; the plugin passes the smoke test in [`examples/`](examples/); no leaks of internal Dryade symbols or credentials.
+
+For exact terms, marketplace SLAs, or large-deal carve-outs (volume rebates, enterprise reseller, sovereign deployments): email **licensing@dryade.ai**.
 
 ## License
 

@@ -4,7 +4,7 @@ The questions we have seen first-time authors ask. Open a
 [Discussion](https://github.com/DryadeAI/dryade-plugins-sdk/discussions/categories/q-a)
 if yours is not here.
 
-## 1. Do I need to install Dryade core to author a plugin?
+## 1. Do I need to install the Dryade runtime to author a plugin?
 
 **No.** The SDK is a pure-contract package. Install `dryade-plugins-sdk`
 from PyPI, run `pytest`, and your plugin is ready to package. The
