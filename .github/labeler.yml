@@ -1,0 +1,39 @@
+# File-path glob -> label mapping for actions/labeler@v5.
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docs/**"
+          - "README.md"
+          - "CONTRIBUTING.md"
+          - "examples/*/README.md"
+          - "CHANGELOG.md"
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "pyproject.toml"
+          - ".github/dependabot.yml"
+
+security:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "SECURITY.md"
+          - ".github/workflows/scorecard.yml"
+          - ".github/workflows/codeql.yml"
+          - ".github/workflows/dependency-review.yml"
+
+chore:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/workflows/**"
+          - ".github/labels.yml"
+          - ".github/release-drafter.yml"
+          - ".github/labeler.yml"
+          - ".github/FUNDING.yml"
+          - ".gitignore"
+
+feature:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/**/*.py"
+          - "examples/*/plugin.py"

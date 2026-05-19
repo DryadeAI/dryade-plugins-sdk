@@ -1,0 +1,49 @@
+name: Bug Report
+description: Something does not work as documented.
+labels: [bug, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing. Before submitting, please check existing issues and the [FAQ](https://sdk.dryade.ai/faq/).
+  - type: input
+    id: sdk-version
+    attributes:
+      label: SDK version
+      placeholder: 1.0.0 — run `dryade-cli --version`
+    validations: { required: true }
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: 3.12.x — run `python --version`
+    validations: { required: true }
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options: [Linux, macOS, Windows]
+    validations: { required: true }
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear, concise description of the bug.
+    validations: { required: true }
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations: { required: true }
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal reproduction
+      description: A short, complete code or CLI sequence that reproduces the bug.
+      render: bash
+    validations: { required: true }
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs / tracebacks
+      render: shell

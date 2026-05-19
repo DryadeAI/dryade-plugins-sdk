@@ -1,0 +1,14 @@
+{
+  "projectName": "dryade-plugins-sdk",
+  "projectOwner": "DryadeAI",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": ["README.md"],
+  "imageSize": 80,
+  "commit": false,
+  "commitConvention": "angular",
+  "contributorsPerLine": 7,
+  "contributors": [],
+  "contributorsSortAlphabetically": true,
+  "skipCi": true
+}

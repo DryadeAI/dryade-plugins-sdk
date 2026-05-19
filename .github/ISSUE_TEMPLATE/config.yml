@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and Discussion
+    url: https://github.com/DryadeAI/dryade-plugins-sdk/discussions
+    about: Use GitHub Discussions for questions, ideas, and showing off plugins you built.
+  - name: Discord
+    url: https://dryade.ai/discord
+    about: Real-time help on Discord #plugin-authors.
+  - name: Security vulnerability
+    url: https://github.com/DryadeAI/dryade-plugins-sdk/security/advisories/new
+    about: Do NOT file vulnerabilities as public issues. Use GitHub Security Advisories.

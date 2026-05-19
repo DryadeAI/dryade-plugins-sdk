@@ -1,0 +1,32 @@
+# dryade-plugins-sdk
+
+> Build sovereign AI agents that run anywhere. Author Dryade plugins in Python with type-safe protocols. Scaffold, validate, package, and ship in one CLI.
+
+## Documentation
+
+- [Getting Started](https://sdk.dryade.ai/getting-started/) — 5-step tutorial: install -> scaffold -> write -> test -> package
+- [Concepts](https://sdk.dryade.ai/concepts/) — Protocols, Manifest v2, Tiers, Signing, Hashing, Sandbox, Contract version
+- [API Reference](https://sdk.dryade.ai/api-reference/) — full Protocol surface (Plugin, Agent, Tool, Route, Config, KV, Leash, Auth, DB, Channels)
+- [CLI Reference](https://sdk.dryade.ai/cli-reference/) — dryade-cli commands (new, validate, package, keygen, doctor)
+- [Cookbook](https://sdk.dryade.ai/cookbook/) — HITL prompt, MCP tool, multi-agent collaboration, persistent KV, UI
+
+## Examples
+
+- [hello_world](https://github.com/DryadeAI/dryade-plugins-sdk/tree/main/examples/hello_world) — minimal Plugin skeleton
+- [with_tool](https://github.com/DryadeAI/dryade-plugins-sdk/tree/main/examples/with_tool) — register a tool the host LLM can call
+- [with_llm](https://github.com/DryadeAI/dryade-plugins-sdk/tree/main/examples/with_llm) — tool that calls the host LLM
+- [with_ui](https://github.com/DryadeAI/dryade-plugins-sdk/tree/main/examples/with_ui) — ships a React UI bundle
+- [multi_agent](https://github.com/DryadeAI/dryade-plugins-sdk/tree/main/examples/multi_agent) — agents collaborate via shared KV
+
+## Optional
+
+- [Security model for authors](https://sdk.dryade.ai/security/) — what plugin authors must know about hashing, signing, tier slots
+- [Migration from manifest v1](https://sdk.dryade.ai/migration/) — for internal contributors
+- [CHANGELOG](https://github.com/DryadeAI/dryade-plugins-sdk/blob/main/CHANGELOG.md) — versioned release notes
+
+## Notes
+
+- License: DSUL (source-available, see LICENSE)
+- Python: 3.11+
+- Contract version: 4 (SHA-256 + SHA3-256 dual hash)
+- Marketplace: https://dryade.ai/marketplace

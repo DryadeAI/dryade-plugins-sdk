@@ -1,0 +1,29 @@
+{
+  "manifest_version": "2.0",
+  "name": "with_ui",
+  "version": "0.1.0",
+  "description": "Dryade plugin example — ships a React UI bundle the workbench mounts.",
+  "required_tier": "team",
+  "author": "Dryade Examples",
+  "core_version_constraint": ">=1.0.0,<2.0.0",
+  "has_ui": true,
+  "ui_bundle_hash": "3e925db427f3d40a1a32f50f994dad34522f4714fdc817809dda618e73a146df",
+  "ui": {
+    "entry": "ui/index.tsx",
+    "routes": [],
+    "sidebar_item": {
+      "label": "with_ui",
+      "icon": "Box"
+    },
+    "permissions": [],
+    "max_bundle_size_kb": 500
+  },
+  "agents": [],
+  "tools": [],
+  "routes": [],
+  "permissions": [],
+  "api_paths": [],
+  "plugin_dependencies": [],
+  "icon": "Box",
+  "tags": ["example", "ui"]
+}

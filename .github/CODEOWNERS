@@ -1,0 +1,15 @@
+# Default owners — every PR requires review by the core maintainer team.
+* @DryadeAI/core-maintainers
+
+# Workflows require an extra reviewer (PyPI publish security).
+/.github/workflows/ @DryadeAI/core-maintainers @DryadeAI/security
+
+# The critical-path defense tests require security-team sign-off on changes.
+/tests/test_zero_core_imports.py @DryadeAI/security
+/tests/test_hash_conformance.py @DryadeAI/security
+
+# Packaging primitives — anything touching hash / signing requires security review.
+/src/dryade_plugins_sdk/packaging.py @DryadeAI/core-maintainers @DryadeAI/security
+
+# Bundled schema is the public contract surface — same review burden as a protocol change.
+/src/dryade_plugins_sdk/_schemas/ @DryadeAI/core-maintainers @DryadeAI/security

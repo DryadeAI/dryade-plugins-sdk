@@ -1,0 +1,25 @@
+{
+  "manifest_version": "2.0",
+  "name": "with_tool",
+  "version": "0.1.0",
+  "description": "Dryade plugin example — registers one tool the host LLM can call.",
+  "required_tier": "starter",
+  "author": "Dryade Examples",
+  "core_version_constraint": ">=1.0.0,<2.0.0",
+  "has_ui": false,
+  "agents": [],
+  "tools": [
+    {
+      "name": "get_current_time",
+      "description": "Return the current UTC time as ISO 8601.",
+      "input_schema": {},
+      "output_schema": {"type": "string"},
+      "lim_callable": true
+    }
+  ],
+  "routes": [],
+  "permissions": [],
+  "api_paths": [],
+  "plugin_dependencies": [],
+  "tags": ["example", "tool"]
+}

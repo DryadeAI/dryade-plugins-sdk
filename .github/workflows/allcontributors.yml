@@ -1,0 +1,20 @@
+name: All Contributors
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  allcontributors:
+    name: Update contributors table on @all-contributors mention
+    if: contains(github.event.comment.body, '@all-contributors')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: all-contributors/all-contributors-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
