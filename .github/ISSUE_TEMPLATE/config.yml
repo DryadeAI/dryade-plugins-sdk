@@ -4,7 +4,7 @@ contact_links:
     url: https://github.com/DryadeAI/dryade-plugins-sdk/discussions
     about: Use GitHub Discussions for questions, ideas, and showing off plugins you built.
   - name: Discord
-    url: https://dryade.ai/discord
+    url: https://github.com/DryadeAI/dryade-plugins-sdk/discussions
     about: Real-time help on Discord #plugin-authors.
   - name: Security vulnerability
     url: https://github.com/DryadeAI/dryade-plugins-sdk/security/advisories/new

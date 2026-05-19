@@ -64,7 +64,7 @@ pytest tests/
 All 7 scaffolded tests should pass. Now edit `plugin.py` to add your
 behavior. The SDK ships test fixtures
 (`from dryade_plugins_sdk.testing import FakeHost, MockKV, MockLLM`) so you
-can `pytest` end-to-end without installing Dryade core.
+can `pytest` end-to-end without installing the Dryade runtime.
 
 ## 5. Validate + package
 

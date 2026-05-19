@@ -1,6 +1,6 @@
 """Dryade plugin SDK — Protocol contracts for plugin authors.
 
-PURE CONTRACT: no core.* imports. Authors satisfy these protocols structurally.
+PURE CONTRACT: zero imports from the host runtime. Authors satisfy these protocols structurally — the runtime checks shape, not inheritance.
 
 This module re-exports the stable public surface:
   - Core protocols (339-03a): Plugin / Agent / Tool / Route / Config + supporting models

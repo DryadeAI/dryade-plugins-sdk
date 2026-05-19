@@ -46,6 +46,6 @@ Walk through the full tutorial in **[Getting Started](getting-started.md)**.
 
 ## Community
 
-- **Discord** — [#plugin-authors](https://dryade.ai/discord)
+- **Discord** — [GitHub Discussions](https://github.com/DryadeAI/dryade-plugins-sdk/discussions)
 - **GitHub Discussions** — Q&A, Show & Tell, Ideas
 - **Twitter/X** — [@DryadeAI](https://twitter.com/DryadeAI)

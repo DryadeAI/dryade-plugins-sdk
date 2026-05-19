@@ -27,7 +27,7 @@ Thanks for your interest in contributing.
 Your PR must pass:
 
 - `pytest` (full suite — Python 3.11, 3.12, 3.13)
-- `pytest tests/test_zero_core_imports.py` (D-05 enforcement — SDK NEVER imports from Dryade core)
+- `pytest tests/test_zero_core_imports.py` (D-05 enforcement — SDK NEVER imports from the host runtime)
 - `pytest tests/test_hash_conformance.py` (Rule §9 — hash algorithm byte-identical to Dryade core)
 - `pytest tests/test_smoke_e2e.py` (scaffold → validate → package smoke)
 - `ruff check src/ tests/` (lint)
@@ -35,13 +35,12 @@ Your PR must pass:
 
 ## Non-negotiable invariants
 
-1. **D-05: Zero `core.*` imports.** This SDK is a pure CONTRACT package. It defines
-   Protocols that Dryade core implements, not the other way around. `test_zero_core_imports.py`
+1. **D-05: zero host-runtime imports.** This SDK is a pure CONTRACT package. It defines
+   Protocols that the Dryade runtime implements, not the other way around. the host-imports gate test
    AST-scans every file in `src/` and fails the build on any `from core.` or `import core`.
 
 2. **Rule §9: Hash algorithm parity.** `compute_plugin_hash_pair` must produce
-   byte-identical SHA-256 and SHA3-256 digests as Dryade core's
-   `_compute_plugin_hash_pair`. The `test_hash_conformance.py` test
+   byte-identical SHA-256 and SHA3-256 digests as the Dryade runtime's hash function. The `test_hash_conformance.py` test
    independently reimplements the algorithm and asserts equality.
 
 3. **Rule §11: Tier names.** Valid `required_tier` values: `starter`, `team`,
