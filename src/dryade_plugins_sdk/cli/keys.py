@@ -5,9 +5,9 @@ Format: raw 32-byte Ed25519 (matches ``scripts/sign_plugins.py:99-109``).
 Perms: priv key 0o600, parent dir 0o700.
 
 Consumed by:
-- ``dryade_cli.pkg.build_dryadepkg`` (via ``load_author_private_key``, lazy import)
-- ``dryade_cli.commands.keygen`` (via ``generate_author_keypair``)
-- ``dryade_cli.commands.package`` (via ``AUTHOR_KEY_PRIV`` existence check)
+- ``dryade_plugins_sdk.cli.pkg.build_dryadepkg`` (via ``load_author_private_key``, lazy import)
+- ``dryade_plugins_sdk.cli.commands.keygen`` (via ``generate_author_keypair``)
+- ``dryade_plugins_sdk.cli.commands.package`` (via ``AUTHOR_KEY_PRIV`` existence check)
 """
 
 from __future__ import annotations

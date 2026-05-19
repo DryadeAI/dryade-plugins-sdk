@@ -12,9 +12,9 @@ import typer
 
 # Re-export VALID_TIERS / validate_tier for backwards compatibility with any
 # Task 1 callers that imported from dryade_plugins_sdk.cli.cli before the helper moved
-# into dryade_cli._tier (broken to escape a circular import once command
+# into dryade_plugins_sdk.cli._tier (broken to escape a circular import once command
 # modules began consuming the callback). Rule §11: 'community' is NOT a valid
-# plugin tier and the callback at dryade_cli._tier.validate_tier rejects it
+# plugin tier and the callback at dryade_plugins_sdk.cli._tier.validate_tier rejects it
 # at parse time before any template renders.
 from dryade_plugins_sdk.cli.commands.new import new_plugin
 from dryade_plugins_sdk.cli.commands.package import package_plugin

@@ -132,7 +132,7 @@ def new_plugin(
         # 04b adds keys.py; 04a-only state defers to explicit `dryade plugin keygen`.
         pass
 
-    template_root = Path(str(resources.files("dryade_cli") / "templates"))
+    template_root = Path(str(resources.files("dryade_plugins_sdk.cli") / "templates"))
     if not (template_root / tier).exists():
         typer.secho(f"Template tier not found: {tier}", fg=typer.colors.RED)
         raise typer.Exit(code=1)

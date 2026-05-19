@@ -5,7 +5,7 @@ dryade.json carrying both plugin_hash_sha256 + plugin_hash_sha3_256 (Rule §9
 contract v4) and a 128-char hex Ed25519 signature from the author's
 ~/.dryade-author/dev-key.priv key.
 
-339-04b ships ``dryade_cli.keys`` (which exports ``load_author_private_key``
+339-04b ships ``dryade_plugins_sdk.cli.keys`` (which exports ``load_author_private_key``
 and the canonical key path). This module imports the key loader LAZILY so the
 04a-only state surfaces a clear "Run keygen first" error rather than a Python
 ImportError stacktrace.

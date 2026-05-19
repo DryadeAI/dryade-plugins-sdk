@@ -25,7 +25,7 @@ def package_plugin(
     """Produce a signed `.dryadepkg` ready for marketplace submission."""
     plugin_dir = plugin_dir.resolve()
 
-    # 339-04b ships dryade_cli.keys. The 04a-only state surfaces a clear error.
+    # 339-04b ships dryade_plugins_sdk.cli.keys. The 04a-only state surfaces a clear error.
     try:
         # Re-resolve the path at call time (NOT at module-import time). The
         # AUTHOR_KEY_PRIV constant is frozen at keys.py import time against

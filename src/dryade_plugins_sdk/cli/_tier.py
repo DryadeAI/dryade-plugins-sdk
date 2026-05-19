@@ -1,7 +1,7 @@
 """Rule §11 tier-enum enforcement.
 
 Lives in its own module so command modules can import ``validate_tier``
-without depending on ``dryade_cli.cli`` (which imports them, creating a
+without depending on ``dryade_plugins_sdk.cli.cli`` (which imports them, creating a
 circular dependency).
 """
 
