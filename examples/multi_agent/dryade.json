@@ -1,0 +1,28 @@
+{
+  "manifest_version": "2.0",
+  "name": "multi_agent",
+  "version": "0.1.0",
+  "description": "Dryade plugin example — two agents collaborate via shared KV.",
+  "required_tier": "team",
+  "author": "Dryade Examples",
+  "core_version_constraint": ">=1.0.0,<2.0.0",
+  "has_ui": false,
+  "agents": [
+    {
+      "name": "researcher",
+      "capability": "gather",
+      "framework": "crewai"
+    },
+    {
+      "name": "summarizer",
+      "capability": "compress",
+      "framework": "crewai"
+    }
+  ],
+  "tools": [],
+  "routes": [],
+  "permissions": ["data:read", "data:write"],
+  "api_paths": [],
+  "plugin_dependencies": [],
+  "tags": ["example", "multi-agent", "kv"]
+}

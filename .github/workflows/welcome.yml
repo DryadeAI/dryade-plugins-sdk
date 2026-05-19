@@ -1,0 +1,33 @@
+name: Welcome first-time contributors
+
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  welcome:
+    name: Auto-comment on first-time contributor activity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: |
+            Welcome to dryade-plugins-sdk! Thanks for opening your first issue.
+
+            A maintainer will triage soon. If this is a question, [Discussions Q&A](https://github.com/DryadeAI/dryade-plugins-sdk/discussions/categories/q-a) is usually faster — please consider posting there instead.
+          pr-message: |
+            Welcome to dryade-plugins-sdk! Thanks for your first PR.
+
+            Please confirm:
+            - [ ] Tests pass locally (`pytest -x`)
+            - [ ] Examples still build (`pytest tests/test_examples_build.py`)
+            - [ ] PR title follows [Conventional Commits](https://www.conventionalcommits.org/)
+
+            A maintainer will review shortly. Want to be added to the All Contributors list? Drop a comment like `@all-contributors please add @yourname for code`.

@@ -1,0 +1,74 @@
+# Python build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Test + coverage
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+.hypothesis/
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Type checking caches
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+.ruff_cache/
+
+# DeepEval (third-party test framework cache directory)
+.deepeval/
+
+# IDEs / editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Docs build output
+site/
+
+# Build outputs that should never be committed
+*.dryadepkg
+
+# Internal launch-coordination drafts — never publish.
+# MARKETING.md and .private/ live in the internal monorepo or an ops drive,
+# NOT in this public repo. The test_no_internal_leaks_in_marketing.py
+# regression net asserts this stays true.
+.private/
+MARKETING.md

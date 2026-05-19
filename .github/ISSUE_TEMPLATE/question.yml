@@ -1,0 +1,21 @@
+name: Question
+description: Have a question about the SDK?
+labels: [question, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For questions, please use [GitHub Discussions Q&A](https://github.com/DryadeAI/dryade-plugins-sdk/discussions/categories/q-a) first — it is a better fit and other users can find the answer later.
+
+        Use this template only if you believe the question is bug-adjacent.
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description: What are you trying to do? What have you tried?
+    validations: { required: true }
+  - type: input
+    id: sdk-version
+    attributes:
+      label: SDK version (optional)
+      placeholder: 1.0.0

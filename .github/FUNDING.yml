@@ -1,0 +1,15 @@
+# Funding configuration for dryade-plugins-sdk.
+#
+# Dryade is a commercial product with a self-hosted DSUL source-available
+# core, and revenue comes through the marketplace (plugin sales + Team /
+# Enterprise tier subscriptions) rather than GitHub Sponsors. Authors who
+# want to support development should point users at the marketplace.
+#
+# The GitHub Sponsors / OpenCollective / Patreon lines are kept commented
+# so they can be enabled later without changing the surrounding files.
+
+# github: [DryadeAI]
+# open_collective: dryade
+# patreon: dryade
+
+custom: ["https://dryade.ai/marketplace"]
