@@ -10,14 +10,6 @@
   <strong>Pure-Protocol Python SDK for authoring Dryade plugins.</strong><br>
   Zero <code>core.*</code> imports. Hash-conformant. DSUL-licensed.
 </p>
-<h1 align="center">dryade-plugins-sdk</h1>
-
-<p align="center">
-  <strong>Build sovereign AI agents that run anywhere.</strong><br>
-  Author Dryade plugins in Python with type-safe protocols. Scaffold, validate, package, and ship in one CLI.
-</p>
-
-<p align="center">
   <a href="https://github.com/DryadeAI/dryade-plugins-sdk/actions/workflows/ci.yml"><img src="https://github.com/DryadeAI/dryade-plugins-sdk/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://pypi.org/project/dryade-plugins-sdk/"><img src="https://img.shields.io/pypi/v/dryade-plugins-sdk.svg" alt="PyPI"></a>
   <a href="https://pypi.org/project/dryade-plugins-sdk/"><img src="https://img.shields.io/pypi/pyversions/dryade-plugins-sdk.svg" alt="Python versions"></a>
