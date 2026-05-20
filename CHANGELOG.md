@@ -13,6 +13,29 @@ labeled PRs.
 
 _release-drafter manages this section on every PR merge — do not edit by hand._
 
+## [1.1.2] — 2026-05-20
+
+### Added
+
+- `@route` decorator stamps canonical `_dryade_route_meta` on the
+  wrapped callable, in addition to the legacy `spec` attribute.
+- `collect_routes(plugin)` and `build_router(plugin)` helpers in
+  `dryade_plugins_sdk.plugin`: walk a plugin instance and produce a
+  FastAPI `APIRouter` from every decorated method. Lazy-imports
+  FastAPI. Plugins that pre-build `self.router` get it back unchanged
+  (no double-mount).
+- `dryade plugin package` embeds a CycloneDX 1.5 SBOM as
+  `sbom.cdx.json` in every `.dryadepkg`. Full SBOM via `cyclonedx-py`
+  when available, minimal shim otherwise. The manifest's `sbom` field
+  records the source.
+
+### Fixed
+
+- (host, via DryadeAI/Dryade #962) The plugin loader's `isinstance`
+  load gate now accepts both the host's `PluginProtocol` ABC and the
+  public SDK's `Plugin` Protocol. Plugins authored with
+  `dryade plugin new` no longer need to inherit from `core.ee.*`.
+
 ## [1.0.0] — TBD
 
 Initial public release. The SDK is the pure-contract package that Dryade

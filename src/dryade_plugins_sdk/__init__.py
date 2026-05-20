@@ -14,7 +14,13 @@ This module re-exports the stable public surface:
 
 from __future__ import annotations
 
-from dryade_plugins_sdk.plugin import Plugin, HealthCheck, ManageableComponent
+from dryade_plugins_sdk.plugin import (
+    Plugin,
+    HealthCheck,
+    ManageableComponent,
+    collect_routes,
+    build_router,
+)
 from dryade_plugins_sdk.agent import (
     Agent,
     AgentFramework,
@@ -46,7 +52,7 @@ from dryade_plugins_sdk.packaging import (
     verify_plugin_hash,
 )
 
-__version__ = "1.0.0"
+__version__ = "1.1.2"
 __contract_version__ = 4  # SHA-256 + SHA3-256 dual hash (Rule §9)
 
 __all__ = [
@@ -65,6 +71,8 @@ __all__ = [
     "tool",
     "Route",
     "route",
+    "collect_routes",
+    "build_router",
     "Config",
     # Supporting protocols (339-03b)
     "KV",
