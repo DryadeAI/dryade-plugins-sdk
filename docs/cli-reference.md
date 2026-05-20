@@ -88,6 +88,11 @@ dryade plugin package ./my_plugin --output ./dist
 Output: `<name>-<version>.dryadepkg` — a gzipped tar archive containing:
 
 - `dryade.json` with signed hashes and Ed25519 signature.
+- `sbom.cdx.json` — CycloneDX 1.5 SBOM (full when `cyclonedx-py` is on
+  `PATH`, otherwise a minimal shim flagged via
+  `metadata.properties[dryade:sbom-source]`). The manifest also carries
+  `sbom: "cyclonedx-py" | "minimal-shim"` so consumers can read the
+  source without unpacking the SBOM.
 - The plugin's `__init__.py`, `plugin.py`, and any other `.py` files.
 
 Author key material is **never** bundled (T-339-04-03 mitigation).
