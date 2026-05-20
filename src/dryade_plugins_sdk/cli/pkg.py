@@ -116,15 +116,40 @@ def build_dryadepkg(plugin_dir: Path, output_dir: Path) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
     pkg_path = output_dir / f"{name}-{version}.dryadepkg"
 
+    # Build the CycloneDX SBOM for the plugin. Full path uses cyclonedx-py;
+    # fallback is a minimal shim flagged via metadata.properties so consumers
+    # can distinguish the two at audit time.
+    from dryade_plugins_sdk.cli.sbom import build_sbom
+
+    sbom_doc = build_sbom(plugin_dir, name, version)
+    sbom_source = "minimal-shim"
+    for prop in sbom_doc.get("metadata", {}).get("properties", []) or []:
+        if prop.get("name") == "dryade:sbom-source":
+            sbom_source = prop.get("value") or sbom_source
+            break
+    # Flag the SBOM source on the manifest itself so the host (and
+    # downstream provenance checks) can read it from dryade.json without
+    # unpacking sbom.cdx.json.
+    manifest["sbom"] = sbom_source
+
     # Write the re-signed manifest to a temp file so we can tar-add it under
     # the canonical arcname while leaving the on-disk dryade.json untouched.
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as tmp:
         tmp.write(json.dumps(manifest, sort_keys=True, indent=2))
         tmp_manifest_path = Path(tmp.name)
 
+    # Write the SBOM to a sibling temp file we can add under the canonical
+    # arcname `sbom.cdx.json` without leaving it in the plugin tree.
+    with tempfile.NamedTemporaryFile(
+        "w", suffix=".cdx.json", delete=False, encoding="utf-8"
+    ) as tmp_sbom:
+        tmp_sbom.write(json.dumps(sbom_doc, sort_keys=True, indent=2))
+        tmp_sbom_path = Path(tmp_sbom.name)
+
     try:
         with tarfile.open(pkg_path, "w:gz") as tf:
             tf.add(tmp_manifest_path, arcname="dryade.json")
+            tf.add(tmp_sbom_path, arcname="sbom.cdx.json")
             for f in sorted(plugin_dir.rglob("*")):
                 if not f.is_file():
                     continue
@@ -132,9 +157,14 @@ def build_dryadepkg(plugin_dir: Path, output_dir: Path) -> Path:
                 if rel.name == "dryade.json":
                     # The signed copy was already added under arcname=dryade.json.
                     continue
+                if rel.name == "sbom.cdx.json":
+                    # Skip any pre-existing SBOM; we just added our freshly
+                    # generated one under the canonical arcname.
+                    continue
                 if _should_include(rel):
                     tf.add(f, arcname=str(rel))
     finally:
         tmp_manifest_path.unlink(missing_ok=True)
+        tmp_sbom_path.unlink(missing_ok=True)
 
     return pkg_path

@@ -44,7 +44,7 @@ def test_version_attributes() -> None:
     """``__version__`` and ``__contract_version__`` are set at the published values."""
     import dryade_plugins_sdk
 
-    assert dryade_plugins_sdk.__version__ == "1.0.0"
+    assert dryade_plugins_sdk.__version__ == "1.1.2"
     assert dryade_plugins_sdk.__contract_version__ == 4
 
 

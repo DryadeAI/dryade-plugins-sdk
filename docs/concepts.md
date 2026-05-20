@@ -73,6 +73,44 @@ When you submit to the marketplace, the marketplace **re-signs** with its
 own dual Ed25519 + ML-DSA-65 keys before publishing in the signed allowlist.
 Authors never see the production signing material.
 
+## SBOM — embedded CycloneDX
+
+Every `.dryadepkg` produced by `dryade plugin package` carries an
+embedded CycloneDX 1.5 SBOM at `sbom.cdx.json`. The packager tries
+`cyclonedx-py` first (full SBOM with components and dependencies). If
+`cyclonedx-py` is not on `PATH` the SBOM falls back to a minimal shim
+with the component metadata only — the shim is flagged via
+`metadata.properties[dryade:sbom-source = "minimal-shim"]` so consumers
+can distinguish the two at audit time. The manifest also carries an
+`sbom` field with the same source string so downstream provenance
+checks can read it without opening the SBOM file.
+
+## Routes — `@route` decorator
+
+Plugins can expose HTTP endpoints by decorating methods with `@route`:
+
+```python
+from dryade_plugins_sdk import build_router, route
+
+class MyPlugin:
+    name = "my_plugin"
+    # ...
+
+    @route(path="/status", method="GET")
+    def status(self):
+        return {"ok": True}
+
+    def register(self, registry):
+        registry.register(build_router(self))
+```
+
+`build_router(plugin)` walks the plugin via `collect_routes(plugin)`,
+binds every decorated method onto a fresh FastAPI `APIRouter`, and
+returns it. Plugins that already construct their own `self.router`
+get that router back unchanged — no double-mount. FastAPI is imported
+lazily, so plugins without routes don't pull FastAPI into the SDK's
+import path.
+
 ## Hashing — contract version 4
 
 Every plugin source file gets hashed with **both SHA-256 and SHA3-256**.
