@@ -159,10 +159,16 @@ def new_plugin(
     )
     typer.echo("\nNext steps:")
     typer.echo(f"  cd {target}")
-    typer.echo("  pip install -e .[dev]")
+    typer.echo("  python -m venv .venv && source .venv/bin/activate")
+    typer.echo("  pip install -e \".[dev]\"")
     typer.echo("  pytest")
     typer.echo("  dryade plugin validate .")
     typer.echo("  dryade plugin package .")
+    typer.echo()
+    typer.echo("For local Dryade dev iteration:")
+    typer.echo("  dryade-pm push --plugins-dir <parent-dir-of-this-plugin>")
+    typer.echo("  # then SIGHUP your local Dryade gunicorn master so it re-imports:")
+    typer.echo("  kill -HUP $(pgrep -f \"gunicorn.*core.api.main\" | head -1)")
 
     # D-10 + F7.4 slot disclosure — three reinforcing surfaces (CLI help,
     # this scaffold output, and security-for-authors.md §5). Spell out the
@@ -170,13 +176,15 @@ def new_plugin(
     # marketplace's slot economy.
     typer.echo()
     typer.secho("Tier and slots:", bold=True)
-    typer.echo(f"  Your plugin's required_tier is '{tier}'. Every plugin you ship consumes ONE of")
-    typer.echo("  the end-user's custom_plugin_slots. Slot ranges:")
-    typer.echo("    starter:    1-3 slots typical")
-    typer.echo("    team:       3-5 slots typical")
-    typer.echo("    enterprise: 10+ slots typical")
-    typer.echo("  Design for high value per slot.")
-    typer.echo("  Full slot model:        https://docs.dryade.ai/plugins/tiers")
+    typer.echo(f"  Your plugin's required_tier is '{tier}' — that controls which end-user")
+    typer.echo("  license tiers can install your plugin (broader tier = wider reach):")
+    typer.echo("    starter      → installable by Starter / Team / Enterprise (broadest)")
+    typer.echo("    team         → installable by Team / Enterprise")
+    typer.echo("    enterprise   → installable by Enterprise only (narrowest, highest ACV)")
+    typer.echo("  End-user plugin slot ceilings (5 / 15 / 25 plugins per tier) are published")
+    typer.echo("  at https://dryade.ai/pricing — design for high per-slot value regardless")
+    typer.echo("  of which tier-license your customer holds.")
+    typer.echo("  Tier reference:         https://dryade.ai/docs/sdk/concepts")
 
     # F6.5 cross-link to security disclosure (page authored in 339-06).
     typer.echo()

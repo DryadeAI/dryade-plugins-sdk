@@ -30,7 +30,7 @@ class {{ class_name }}Plugin:
     name = "{{ name }}"
     version = "0.1.0"
     description = "{{ description }}"
-    core_version_constraint = "{{ core_version_constraint | default('>=1.0.0,<2.0.0') }}"
+    core_version_constraint = "{{ core_version_constraint | default('>=1.0.0') }}"
 
     def register(self, registry: Any) -> None:
         """Register tools with the host."""
