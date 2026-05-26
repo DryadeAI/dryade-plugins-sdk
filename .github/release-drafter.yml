@@ -11,7 +11,7 @@ categories:
     labels: [security]
   - title: 'Chores'
     labels: [chore, ci, dependencies]
-change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+change-template: '- $TITLE (#$NUMBER)'
 change-title-escapes: '\<*_&'
 version-resolver:
   major:
