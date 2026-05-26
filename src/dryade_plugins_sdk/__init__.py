@@ -52,7 +52,7 @@ from dryade_plugins_sdk.packaging import (
     verify_plugin_hash,
 )
 
-__version__ = "1.1.3"
+__version__ = "1.1.4"
 __contract_version__ = 4  # SHA-256 + SHA3-256 dual hash
 
 __all__ = [

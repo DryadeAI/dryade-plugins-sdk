@@ -13,6 +13,21 @@ labeled PRs.
 
 _release-drafter manages this section on every PR merge — do not edit by hand._
 
+## [1.1.4] — 2026-05-26
+
+### Fixed
+
+- **`dryade plugin package` produced an unverifiable signature.** The manifest
+  was signed before the `sbom` field was added, leaving it outside the signed
+  bytes, so the Ed25519 signature on the `.dryadepkg` failed to verify. Signing
+  now happens last, after every content field (hashes, contract version, sbom)
+  is in place, so the signature covers the final manifest.
+
+### Added
+
+- `tests/test_package_signature.py` — verifies the signature on a produced
+  `.dryadepkg` validates against the author key and covers the `sbom` field.
+
 ## [1.1.3] — 2026-05-26
 
 ### Changed

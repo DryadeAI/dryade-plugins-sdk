@@ -106,10 +106,6 @@ def build_dryadepkg(plugin_dir: Path, output_dir: Path) -> Path:
     manifest["plugin_hash_sha3_256"] = sha3_256_hex
     manifest["contract_version"] = CONTRACT_VERSION
 
-    priv = load_author_private_key()
-    sig_hex = sign_manifest(manifest, priv)
-    manifest["signature"] = sig_hex
-
     name = manifest["name"]
     version = manifest["version"]
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -130,6 +126,13 @@ def build_dryadepkg(plugin_dir: Path, output_dir: Path) -> Path:
     # downstream provenance checks) can read it from dryade.json without
     # unpacking sbom.cdx.json.
     manifest["sbom"] = sbom_source
+
+    # Sign LAST — after every content field (hashes, contract_version, sbom)
+    # is in place — so the Ed25519 signature covers the final manifest. Signing
+    # before adding `sbom` would leave that field outside the signed canonical
+    # bytes, and the signature would fail to verify on the produced package.
+    priv = load_author_private_key()
+    manifest["signature"] = sign_manifest(manifest, priv)
 
     # Write the re-signed manifest to a temp file so we can tar-add it under
     # the canonical arcname while leaving the on-disk dryade.json untouched.
