@@ -1,0 +1,74 @@
+site_name: dryade-plugins-sdk
+site_url: https://sdk.dryade.ai
+site_description: Build sovereign AI agents — author Dryade plugins in Python with type-safe protocols.
+site_author: Dryade
+repo_url: https://github.com/DryadeAI/dryade-plugins-sdk
+repo_name: DryadeAI/dryade-plugins-sdk
+edit_uri: edit/main/docs/
+copyright: Dryade · MIT · source-available
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: deep purple
+      accent: green
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark
+    - scheme: slate
+      primary: deep purple
+      accent: green
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tooltips
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Concepts: concepts.md
+  - API Reference: api-reference.md
+  - CLI Reference: cli-reference.md
+  - Examples: examples.md
+  - Cookbook: cookbook.md
+  - Security: security.md
+  - Migration: migration.md
+  - FAQ: faq.md
+  - Changelog: changelog.md
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/DryadeAI/dryade-plugins-sdk
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/dryade-plugins-sdk/
+    - icon: fontawesome/brands/discord
+      link: https://dryade.ai/discord

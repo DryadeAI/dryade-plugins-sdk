@@ -1,0 +1,103 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-*"  # pre-release tags (e.g., v1.0.0-rc1)
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Where to publish"
+        required: true
+        default: "testpypi"
+        type: choice
+        options:
+          - testpypi
+          - pypi
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history for hatchling versioning
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify tag matches pyproject version
+        if: github.event_name == 'push'
+        env:
+          GH_REF: ${{ github.ref }}
+        run: |
+          TAG="${GH_REF##*/}"  # e.g., v1.0.0
+          TAG_VERSION="${TAG#v}"   # strip leading v
+          PROJECT_VERSION=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          if [ "$TAG_VERSION" != "$PROJECT_VERSION" ]; then
+            echo "Tag $TAG (=> $TAG_VERSION) does not match pyproject version $PROJECT_VERSION"
+            exit 1
+          fi
+          echo "Version match: $TAG_VERSION"
+      - name: Install build
+        run: python -m pip install --upgrade pip build
+      - name: Build sdist + wheel
+        run: python -m build
+      - name: Verify license metadata (MIT must appear in wheel)
+        run: |
+          unzip -p dist/*.whl '*/METADATA' | grep -E '^(License|License-Expression)'
+          unzip -p dist/*.whl '*/METADATA' | grep -qE 'License(-Expression)?:\s*MIT'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish-testpypi:
+    # B1+B2 consolidation: TestPyPI pre-flight before production PyPI.
+    # Trigger manually via workflow_dispatch (target=testpypi) BEFORE cutting v* tag,
+    # so license metadata can be verified at https://test.pypi.org/project/dryade-plugins-sdk/
+    name: Publish to TestPyPI (OIDC pre-flight)
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'workflow_dispatch' && inputs.target == 'testpypi'
+    environment:
+      name: pypi-testing
+      url: https://test.pypi.org/project/dryade-plugins-sdk/
+    permissions:
+      id-token: write  # MANDATORY for OIDC
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Publish to TestPyPI via OIDC
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+  publish:
+    # Production PyPI publish — only on `v*` tag push (NOT manual dispatch).
+    name: Publish to PyPI (OIDC)
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push'
+    environment:
+      name: pypi-production
+      url: https://pypi.org/project/dryade-plugins-sdk/
+    permissions:
+      id-token: write  # MANDATORY for OIDC
+      # No `contents: write` — we don't push back to the repo from this job
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Publish via OIDC trusted publisher
+        uses: pypa/gh-action-pypi-publish@release/v1
+        # No `with: password:` — OIDC handles authentication.
+        # PyPI binding configured at:
+        # https://pypi.org/manage/account/publishing/

@@ -1,0 +1,52 @@
+"""{{ name }} plugin implementation.
+
+Satisfies dryade_plugins_sdk.Plugin Protocol structurally — no inheritance
+needed. The @runtime_checkable Plugin Protocol requires:
+    - attributes: name, version, description, core_version_constraint
+    - methods:    register, startup, shutdown, get_health_checks,
+                  get_manageable_components
+
+This module imports ONLY from dryade_plugins_sdk — never reaches into the Dryade host package.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Iterable, Mapping
+from typing import Any
+
+from dryade_plugins_sdk import HealthCheck, ManageableComponent
+
+
+class {{ class_name }}Plugin:
+    """{{ description }}"""
+
+    name = "{{ name }}"
+    version = "0.1.0"
+    description = "{{ description }}"
+    core_version_constraint = "{{ core_version_constraint | default('>=1.0.0') }}"
+
+    def register(self, registry: Any) -> None:
+        """Wire your agents / tools / routes here.
+
+        The host injects a registry object satisfying dryade_plugins_sdk.Registry
+        (i.e. it has a ``register(item)`` method). Call ``registry.register(...)``
+        for each Tool / Route / Agent your plugin exposes.
+        """
+        # Example: registry.register(my_tool)
+
+    def startup(self, **kwargs: Any) -> None:
+        """Called once after all plugins load. Initialize resources here."""
+
+    def shutdown(self) -> None:
+        """Called on graceful shutdown. Release resources here."""
+
+    def get_health_checks(self) -> Mapping[str, HealthCheck]:
+        """Return any plugin-declared health checks for the host to poll."""
+        return {}
+
+    def get_manageable_components(self) -> Iterable[ManageableComponent]:
+        """Return any plugin-declared manageable runtime components."""
+        return []
+
+
+plugin = {{ class_name }}Plugin()

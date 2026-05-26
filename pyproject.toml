@@ -1,0 +1,110 @@
+[build-system]
+requires = ["hatchling>=1.18"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dryade-plugins-sdk"
+version = "1.1.5"
+description = "Dryade plugin SDK — Protocol contracts and author tooling primitives"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Dryade", email = "contact@dryade.ai" }]
+keywords = [
+    "dryade",
+    "plugin",
+    "sdk",
+    "ai",
+    "agent",
+    "agentic-ai",
+    "sovereign-ai",
+    "local-llm",
+    "orchestration",
+    "protocol-design",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: System :: Software Distribution",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Typing :: Typed",
+]
+dependencies = [
+    "pydantic>=2.0",
+    "typing-extensions>=4.0",
+    "cryptography>=42.0",
+    "jsonschema>=4.20",
+]
+
+[project.optional-dependencies]
+testing = []
+cli = [
+  "typer>=0.12",
+  "jinja2>=3.1",
+  "cryptography>=42",
+  "cyclonedx-bom>=4.0",
+]
+docs = [
+    "mkdocs-material>=9.5",
+    "mkdocstrings[python]>=0.24",
+    "mkdocs-git-revision-date-localized-plugin>=1.2",
+]
+
+
+[project.scripts]
+dryade = "dryade_plugins_sdk.cli.cli:main"
+
+[project.urls]
+Homepage = "https://sdk.dryade.ai/"
+Documentation = "https://sdk.dryade.ai/"
+Repository = "https://github.com/DryadeAI/dryade-plugins-sdk"
+Issues = "https://github.com/DryadeAI/dryade-plugins-sdk/issues"
+Discussions = "https://github.com/DryadeAI/dryade-plugins-sdk/discussions"
+Changelog = "https://github.com/DryadeAI/dryade-plugins-sdk/blob/main/CHANGELOG.md"
+PyPI = "https://pypi.org/project/dryade-plugins-sdk/"
+"Star History" = "https://star-history.com/#DryadeAI/dryade-plugins-sdk&Date"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dryade_plugins_sdk"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/dryade_plugins_sdk",
+    "tests",
+    "LICENSE",
+    "README.md",
+    "pyproject.toml",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-ra --strict-markers --strict-config"
+markers = [
+    "e2e: hermetic end-to-end smoke (requires `dryade` CLI on PATH; gated separately in CI)",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.mypy]
+strict = true
+python_version = "3.11"

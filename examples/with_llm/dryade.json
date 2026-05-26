@@ -1,0 +1,29 @@
+{
+  "manifest_version": "2.0",
+  "name": "with_llm",
+  "version": "0.1.0",
+  "description": "Dryade plugin example — tool that calls the host LLM via the Leash protocol.",
+  "required_tier": "starter",
+  "author": "Dryade Examples",
+  "core_version_constraint": ">=1.0.0,<2.0.0",
+  "has_ui": false,
+  "agents": [],
+  "tools": [
+    {
+      "name": "summarize",
+      "description": "Summarize a piece of text using the host LLM.",
+      "input_schema": {
+        "type": "object",
+        "properties": {"text": {"type": "string"}},
+        "required": ["text"]
+      },
+      "output_schema": {"type": "string"},
+      "lim_callable": true
+    }
+  ],
+  "routes": [],
+  "permissions": [],
+  "api_paths": [],
+  "plugin_dependencies": [],
+  "tags": ["example", "llm", "leash"]
+}

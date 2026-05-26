@@ -1,0 +1,52 @@
+"""{{ name }} plugin implementation (team tier — multi-tool example).
+
+Demonstrates how to declare and register a Tool against the SDK contract.
+Pure-SDK — never reaches into the Dryade host package.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Iterable, Mapping
+from typing import Any
+
+from dryade_plugins_sdk import HealthCheck, ManageableComponent, tool
+
+
+@tool(
+    name="example_lookup",
+    description="Stub tool — replace with your plugin's first real tool.",
+)
+def example_lookup(query: str) -> dict[str, str]:
+    """Stub implementation — returns the query as the result.
+
+    Replace with your real lookup logic (database query, API call, etc.).
+    """
+    return {"result": f"stub-result-for: {query}"}
+
+
+class {{ class_name }}Plugin:
+    """{{ description }}"""
+
+    name = "{{ name }}"
+    version = "0.1.0"
+    description = "{{ description }}"
+    core_version_constraint = "{{ core_version_constraint | default('>=1.0.0') }}"
+
+    def register(self, registry: Any) -> None:
+        """Register tools with the host."""
+        registry.register(example_lookup)
+
+    def startup(self, **kwargs: Any) -> None:
+        """Called once after all plugins load."""
+
+    def shutdown(self) -> None:
+        """Called on graceful shutdown."""
+
+    def get_health_checks(self) -> Mapping[str, HealthCheck]:
+        return {}
+
+    def get_manageable_components(self) -> Iterable[ManageableComponent]:
+        return []
+
+
+plugin = {{ class_name }}Plugin()

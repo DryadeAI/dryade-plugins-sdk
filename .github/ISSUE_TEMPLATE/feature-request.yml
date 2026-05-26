@@ -1,0 +1,32 @@
+name: Feature Request
+description: Propose a new SDK capability.
+labels: [feature, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing, please check [Discussions/Ideas](https://github.com/DryadeAI/dryade-plugins-sdk/discussions/categories/ideas)
+        — many feature ideas land there first.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What is the gap or pain point this feature would close? Describe the use case in your own words.
+    validations: { required: true }
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API or behavior
+      description: Sketch what the public surface should look like. A few lines of Python is fine.
+    validations: { required: true }
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What did you try first? What workaround would you accept short-term?
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to author a PR if this is accepted.

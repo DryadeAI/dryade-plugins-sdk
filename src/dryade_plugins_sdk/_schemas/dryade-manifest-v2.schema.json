@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dryade Plugin Manifest v2",
+  "description": "Schema for dryade.json plugin manifests (manifest_version: 2.0)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "manifest_version",
+    "name",
+    "version",
+    "description",
+    "required_tier",
+    "author",
+    "core_version_constraint"
+  ],
+  "properties": {
+    "manifest_version": {
+      "type": "string",
+      "enum": ["2.0"],
+      "description": "Must be exactly \"2.0\". v1 manifests are no longer accepted."
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{1,49}$",
+      "description": "Plugin slug (lowercase, 2-50 chars). Accepts snake_case or kebab-case (production manifests use both)."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+([-+][a-zA-Z0-9.-]+)?$",
+      "description": "Strict semver 2.0.0 (no junk-trail accepted)"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000,
+      "description": "Plugin description shown in marketplace. Soft target ~200 chars for catalog cards; hard ceiling 1000 chars for compliance plugins with long regulatory descriptions."
+    },
+    "required_tier": {
+      "type": "string",
+      "enum": ["starter", "team", "enterprise"]
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "core_version_constraint": {
+      "type": "string",
+      "pattern": "^([><=!~^]=?\\s*\\d+\\.\\d+\\.\\d+([-+][a-zA-Z0-9.-]+)?\\s*,?\\s*)+$",
+      "description": "PEP 440 version constraint"
+    },
+    "has_ui": {
+      "type": "boolean",
+      "default": false
+    },
+    "agents": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Agent" },
+      "default": []
+    },
+    "tools": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Tool" },
+      "default": []
+    },
+    "routes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Route" },
+      "default": []
+    },
+    "permissions": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_:.-]*$"
+          },
+          "uniqueItems": true
+        },
+        {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Legacy nested-object shape used by a small number of plugins (excel_analyst). Migration to array-of-strings is tracked under V1_LEGACY_FIELDS."
+        }
+      ],
+      "default": [],
+      "description": "Permission slugs (free-form strings constrained to identifier chars) OR legacy object shape. Canonical set: ['network','filesystem','database','data:read','data:write','config:read','config:write']."
+    },
+    "api_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^/[a-zA-Z0-9_/*.-]+$",
+        "description": "Plugin-local path (mounted under /api/plugins/<name>/...). Must start with '/' and use only [a-zA-Z0-9_/.*-]"
+      },
+      "default": [],
+      "uniqueItems": true
+    },
+    "plugin_dependencies": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [],
+      "uniqueItems": true
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{128}$",
+      "description": "Ed25519 hex signature, 64 bytes = 128 hex chars"
+    },
+    "signature_pq": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]+$",
+      "description": "Post-quantum signature (reserved; optional in v2.0, mandatory in v2.1)"
+    },
+    "icon": {
+      "type": "string",
+      "pattern": "^[A-Z][a-zA-Z0-9]+$",
+      "description": "Lucide icon name (PascalCase)"
+    },
+    "ui": { "$ref": "#/$defs/UI" },
+    "ui_bundle_hash": {
+      "type": "string",
+      "pattern": "^(sha256-)?[0-9a-fA-F]{64}$",
+      "description": "SHA-256 of compiled UI bundle (raw hex or 'sha256-<hex>' prefixed form, both accepted)."
+    },
+    "ui_chunks_hash": {
+      "type": "object",
+      "description": "Per-chunk SHA-256 hashes for code-split ES bundles"
+    },
+    "settings_schema": {
+      "type": "object",
+      "description": "Per-plugin JSON Schema for runtime settings UI"
+    },
+    "category": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40,
+      "pattern": "^[a-z][a-z0-9_-]*$",
+      "description": "Plugin category slug for marketplace catalog. Canonical values include 'agent','tool','skill','feature','mcp' but production manifests use plugin-domain categories ('eval','ops','notifications','automotive', etc.) so the enum is not locked here."
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 30 },
+      "uniqueItems": true
+    },
+    "mcp_server": { "$ref": "#/$defs/MCPServer" },
+    "agent_metadata": { "$ref": "#/$defs/AgentMetadata" },
+    "deprecated": {
+      "type": "boolean",
+      "default": false
+    },
+    "sandbox_policy": {
+      "type": "string",
+      "pattern": "^.*\\.ya?ml$",
+      "description": "Path (relative to plugin dir) to a sandbox blueprint YAML"
+    },
+    "dependencies": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        {
+          "type": "object",
+          "additionalProperties": true
+        }
+      ],
+      "description": "LEGACY field. Pre-v2 manifests used this as a Python-package dependency list (array of strings) OR as a {component: version} map (e.g., {'core': '>=1.0.0'}); superseded by pyproject.toml. Kept in schema to avoid silent data drop during the v1→v2 cutover."
+    },
+    "has_routes": {
+      "type": "boolean",
+      "description": "LEGACY field. Pre-v2 manifests used this as a hint that the plugin mounts FastAPI routes; superseded by the api_paths array."
+    },
+    "env_vars": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "LEGACY field. Pre-v2 manifests used this to declare which env vars the plugin reads; superseded by settings_schema."
+    },
+    "plugin_type": {
+      "type": "string",
+      "description": "LEGACY field. Use 'category' instead."
+    },
+    "capabilities": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "LEGACY field. Free-form capability hints used by 1 plugin pre-v2."
+    },
+    "plugin_settings": {
+      "type": "object",
+      "description": "LEGACY field. Pre-v2 manifests used this for runtime settings; superseded by settings_schema."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "has_ui": { "const": true } },
+        "required": ["has_ui"]
+      },
+      "then": {
+        "required": ["ui_bundle_hash"],
+        "description": "has_ui:true MUST carry ui_bundle_hash so the host can verify the UI bundle against the signed allowlist. The 'ui' metadata block is optional — production plugins use either the nested ui object OR the top-level display_name/category fallback (resolved by the workbench fallback chain)."
+      }
+    }
+  ],
+  "$defs": {
+    "Agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "capability": { "type": "string" },
+        "framework": { "enum": ["crewai", "langchain", "adk", "a2a", "mcp"] }
+      }
+    },
+    "Tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "input_schema": { "type": "object" },
+        "output_schema": { "type": "object" },
+        "lim_callable": { "type": "boolean", "default": true }
+      }
+    },
+    "Route": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": { "type": "string" },
+        "method": { "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"] },
+        "auth_required": { "type": "boolean", "default": true }
+      }
+    },
+    "UI": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entry": { "type": "string" },
+        "routes": { "type": "array" },
+        "sidebar_item": { "type": "object" },
+        "permissions": { "type": "array" },
+        "max_bundle_size_kb": { "type": "integer", "maximum": 5000 },
+        "slot_components": { "type": "object" },
+        "tray_label": { "type": "string", "maxLength": 60 },
+        "tray_value_prop": { "type": "string", "maxLength": 240 },
+        "tray_emoji": { "type": "string", "maxLength": 16 },
+        "styles": { "type": "string" }
+      }
+    },
+    "MCPServer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "command": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "args": { "type": "array", "items": { "type": "string" } },
+        "env": { "type": "object" }
+      }
+    },
+    "AgentMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "primary_output_format": { "type": "string" },
+        "capabilities": { "type": "object" },
+        "supports_planning": { "type": "boolean" },
+        "max_iterations": { "type": "integer" },
+        "context_window": { "type": "integer" }
+      }
+    }
+  }
+}
