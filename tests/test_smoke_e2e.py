@@ -1,6 +1,6 @@
 """End-to-end author UX smoke test.
 
-D-13 hermetic — no Dryade core install required. Reproduces the clean-clone
+Hermetic — no Dryade core install required. Reproduces the clean-clone
 external-author workflow:
   1. ``dryade plugin keygen``
   2. ``dryade plugin new my_smoke_plugin --tier starter``
@@ -9,12 +9,12 @@ external-author workflow:
   5. Assert .dryadepkg has v2 manifest, 128-char hex signature, correct hashes.
 
 Defends against regression of:
-- F4.2/F4.3 (scaffold output passes validate)
-- F5.4 (Next steps use real CLI commands)
-- F2.4/F2.8 (template breaks build)
-- F7.6 (slot exhaustion semantics)
-- F7.5 (community-rank in CLI)
-- Rule §11 (--tier community rejected)
+- scaffold output passing validate
+- the "Next steps" output using real CLI commands
+- a template breaking the build
+- slot-exhaustion semantics
+- a community rank appearing in the CLI
+- ``--tier community`` being rejected
 
 The whole module is marked ``@pytest.mark.e2e`` so the non-e2e CI matrix
 short-circuits past these tests (they need the ``dryade`` CLI on PATH). The
@@ -44,8 +44,8 @@ def hermetic_home(tmp_path_factory: pytest.TempPathFactory) -> Path:
     return tmp_path_factory.mktemp("hermetic_home")
 
 
-# H7 fix: the `monkeypatch_module` fixture referenced below is defined in
-# `tests/conftest.py` (339-03b). This file references it by name only;
+# The `monkeypatch_module` fixture referenced below is defined in
+# `tests/conftest.py`. This file references it by name only;
 # no inline fixture definition.
 
 
@@ -68,7 +68,7 @@ def setup_author_key(hermetic_home: Path, monkeypatch_module: pytest.MonkeyPatch
     assert pub.exists(), "pub key was not created"
 
     priv_mode = stat.S_IMODE(os.stat(priv).st_mode)
-    assert priv_mode == 0o600, f"D-08 violated: priv perm = {oct(priv_mode)}"
+    assert priv_mode == 0o600, f"priv perm = {oct(priv_mode)}, expected 0o600"
 
 
 def _run_cli(args: list[str], hermetic_home: Path) -> subprocess.CompletedProcess[str]:
@@ -105,20 +105,20 @@ def test_scaffold_creates_v2_plugin(hermetic_home: Path, tmp_path: Path) -> None
     plugin_dir = tmp_path / "my_smoke_plugin"
     assert plugin_dir.exists()
 
-    # F4.2 regression net — manifest is v2
+    # regression net — manifest is v2
     manifest = json.loads((plugin_dir / "dryade.json").read_text())
     assert manifest["manifest_version"] == "2.0"
     assert manifest["required_tier"] == "starter"
-    assert "entry_point" not in manifest  # D-02
+    assert "entry_point" not in manifest  # no entry_point in v2
 
-    # F4.3 regression net — tests are meaningful (≥2 test functions + an assert)
+    # regression net — tests are meaningful (≥2 test functions + an assert)
     test_file = plugin_dir / "tests" / "test_plugin.py"
     assert test_file.exists()
     text = test_file.read_text()
     assert text.count("def test_") >= 2
     assert "assert" in text
 
-    # D-10 slot disclosure in scaffold output
+    # slot disclosure in scaffold output
     out_lower = result.stdout.lower()
     assert "slot" in out_lower or "custom_plugin_slots" in out_lower
 
@@ -197,13 +197,13 @@ def test_package_produces_dryadepkg(hermetic_home: Path, tmp_path: Path) -> None
         assert fh is not None
         manifest = json.loads(fh.read())
 
-    # Rule §11 — required_tier locked
+    # required_tier locked
     assert manifest["required_tier"] == "starter"
-    # F1.2 / D-01 — manifest v2
+    # manifest v2
     assert manifest["manifest_version"] == "2.0"
-    # F4.2 — no entry_point
+    # no entry_point
     assert "entry_point" not in manifest
-    # Rule §9 — both hashes present, 64 hex chars each
+    # both hashes present, 64 hex chars each
     assert "plugin_hash_sha256" in manifest
     assert "plugin_hash_sha3_256" in manifest
     assert len(manifest["plugin_hash_sha256"]) == 64
@@ -217,13 +217,13 @@ def test_package_produces_dryadepkg(hermetic_home: Path, tmp_path: Path) -> None
 
 
 def test_community_tier_rejected(hermetic_home: Path, tmp_path: Path) -> None:
-    """Rule §11 regression net — ``--tier community`` always rejected."""
+    """Regression net — ``--tier community`` always rejected."""
     result = _run_cli(
         [
             "dryade",
             "plugin",
             "new",
-            "rule_11_test",
+            "bad_tier_test",
             "--tier",
             "community",
             "--out",
@@ -231,13 +231,13 @@ def test_community_tier_rejected(hermetic_home: Path, tmp_path: Path) -> None:
         ],
         hermetic_home,
     )
-    assert result.returncode != 0, "Rule §11 violated: --tier community accepted"
+    assert result.returncode != 0, "--tier community accepted"
     # Plugin dir should NOT have been created
-    assert not (tmp_path / "rule_11_test").exists()
+    assert not (tmp_path / "bad_tier_test").exists()
 
 
 def test_hash_conformance_at_package_time(hermetic_home: Path, tmp_path: Path) -> None:
-    """Rule §9 — at package time, the embedded hash must match a fresh compute."""
+    """At package time, the embedded hash must match a fresh compute."""
     scaffold = _run_cli(
         [
             "dryade",
@@ -307,7 +307,7 @@ def test_hash_conformance_at_package_time(hermetic_home: Path, tmp_path: Path) -
 
 
 def test_no_dryade_author_dir_bundled(hermetic_home: Path, tmp_path: Path) -> None:
-    """T-339-04-03 mitigation: .dryadepkg must NOT contain author keys."""
+    """.dryadepkg must NOT contain author keys."""
     scaffold = _run_cli(
         [
             "dryade",

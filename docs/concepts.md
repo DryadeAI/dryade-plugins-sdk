@@ -42,7 +42,7 @@ version) has a strict JSON schema with these required fields:
 | `name` | string, snake_case | matches the directory name |
 | `version` | semver | strict 2.0.0 |
 | `description` | string | shown in marketplace cards |
-| `required_tier` | `starter` / `team` / `enterprise` | **Rule §11 — never `community`** |
+| `required_tier` | `starter` / `team` / `enterprise` | **never `community`** |
 | `author` | string | your name or org |
 | `core_version_constraint` | PEP 440 spec | e.g. `>=1.0.0,<2.0.0` |
 
@@ -59,8 +59,8 @@ the full surface.
 
 Tier limits are **enforced by the Dryade host** based on the signed
 allowlist, not by the SDK or CLI. The CLI rejects `--tier community` at
-scaffold + validate + package time (Rule §11) because the platform itself
-has no community tier.
+scaffold + validate + package time because `community` is not a valid
+plugin tier.
 
 ## Signing
 
@@ -70,8 +70,8 @@ with the private key. Private keys live at `~/.dryade-author/dev-key.priv`
 with mode `0o600` — the CLI refuses to load weaker permissions.
 
 When you submit to the marketplace, the marketplace **re-signs** with its
-own dual Ed25519 + ML-DSA-65 keys before publishing in the signed allowlist.
-Authors never see the production signing material.
+own keys (including a post-quantum signature) before publishing in the signed
+allowlist. Authors never see the production signing material.
 
 ## SBOM — embedded CycloneDX
 

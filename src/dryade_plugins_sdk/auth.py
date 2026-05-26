@@ -4,7 +4,7 @@ These do NOT import from core.auth. They declare the callable shapes the host
 will inject. Plugin authors type-hint against these Protocols; the host's
 real implementations live in core (out of SDK).
 
-This module has ZERO core.* imports (D-05).
+This module has zero host-runtime imports — it is a pure contract.
 """
 
 from __future__ import annotations

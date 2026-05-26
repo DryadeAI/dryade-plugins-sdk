@@ -56,14 +56,9 @@ def _run_cyclonedx(pyproject_path: Path, output_path: Path) -> bool:
     cli = shutil.which("cyclonedx-py")
     if cli is None:
         return False
-    cmd = [
-        cli,
-        "poetry",  # subcommand is moot for pure pyproject parse below;
-        # but most cyclonedx-py builds accept `requirements` or `environment`.
-    ]
     # cyclonedx-py 4+ has subcommands: poetry / requirements / environment.
-    # Use `requirements -` to read from stdin would need a requirements
-    # file; the cleanest path is `environment` against the active venv.
+    # Reading from stdin would need a requirements file; the cleanest path is
+    # `environment` against the active venv.
     cmd = [cli, "environment", "-o", str(output_path), "--output-format", "JSON"]
     try:
         proc = subprocess.run(

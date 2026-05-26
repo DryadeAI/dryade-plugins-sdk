@@ -33,10 +33,10 @@ https://dryade.ai/security.
 
 In-scope examples (non-exhaustive):
 
-- A bug in `dryade-cli` that causes the packager to emit a `.dryadepkg`
-  whose embedded hash does not match the bundled source (`Rule §9` drift).
+- A bug in the CLI that causes the packager to emit a `.dryadepkg`
+  whose embedded hash does not match the bundled source (hash drift).
 - A flaw in the SDK that lets an author bypass `--tier community`
-  rejection at validate time (`Rule §11`).
+  rejection at validate time.
 - Any path in the SDK or CLI that exfiltrates the author's private signing
   key off disk.
 

@@ -1,4 +1,4 @@
-"""F3.2: All stable contract symbols must be importable from ``dryade_plugins_sdk``."""
+"""All stable contract symbols must be importable from ``dryade_plugins_sdk``."""
 
 from __future__ import annotations
 

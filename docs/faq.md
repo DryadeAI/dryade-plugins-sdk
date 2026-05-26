@@ -28,11 +28,11 @@ Three reasons:
 It tells the host's allowlist what privilege class your plugin needs.
 Valid values: `starter`, `team`, `enterprise`. The host enforces tier
 limits (max_users, custom_plugin_slots) from the signed allowlist;
-the SDK refuses `community` (Rule §11) at every level.
+the SDK refuses `community` at every level.
 
 ## 4. Can I bypass the hash check for development?
 
-**No.** The CLI is fail-closed (Rule §4). The host accepts plugins whose
+**No.** The CLI is fail-closed. The host accepts plugins whose
 on-disk hash matches the manifest-embedded hash, full stop. For local
 iteration, re-run `dryade plugin package` after every code change — it
 takes <1s and produces a fresh hash.
@@ -69,17 +69,17 @@ Protocols, not the other way around.
 
 ## 8. Why is `community` rejected as a tier?
 
-The Dryade platform has no community tier — community users have no
-Plugin Manager and no plugins at all. Plugins ship to paying customers
-(`starter` / `team` / `enterprise`). Rule §11 enforces this at every
+The Dryade platform has no community tier. Plugins ship to paying customers
+(`starter` / `team` / `enterprise`), and the SDK enforces this at every
 scaffold / validate / package step.
 
 ## 9. How do I get my plugin into the marketplace?
 
 Submit the `.dryadepkg` produced by `dryade plugin package` to the
 marketplace at https://dryade.ai/marketplace. The marketplace verifies
-your dev signature, re-signs with its dual Ed25519 + ML-DSA-65 production
-keys, and publishes in the signed allowlist that customer installs pull.
+your dev signature, re-signs with its own production keys (including a
+post-quantum signature), and publishes in the signed allowlist that customer
+installs pull.
 
 ## 10. Can I distribute plugins outside the marketplace?
 

@@ -109,7 +109,7 @@ fields. Mutates and returns the manifest.
 ### `load_private_key(path: Path)`
 
 Loads an Ed25519 private key, asserting mode `0o600` (fails closed
-otherwise — D-08).
+otherwise).
 
 ### `verify_plugin_hash(manifest: dict, plugin_dir: Path) -> bool`
 
@@ -135,7 +135,7 @@ loader.
 
 ## Testing fixtures (`dryade_plugins_sdk.testing`)
 
-D-07 fixtures so authors `pytest` without installing Dryade:
+Fixtures so authors `pytest` without installing the host runtime:
 
 - `FakeHost` — in-memory host. Use `host.load(plugin)` then assert against
   `host.registry.tools`, `host.registry.routes`, `host.registry.agents`,

@@ -24,7 +24,7 @@ Output:
 ~/.dryade-author/dev-key.pub
 ```
 
-The CLI refuses to load keys with weaker permissions (D-08). Re-run keygen
+The CLI refuses to load keys with weaker permissions. Re-run keygen
 to rotate; the marketplace records each public key fingerprint you submit
 under, so rotated keys remain valid for previously-signed packages.
 
@@ -40,7 +40,7 @@ dryade plugin new my_plugin --tier starter
 
 **Options:**
 
-- `--tier {starter,team,enterprise}` — Rule §11 enforces this set.
+- `--tier {starter,team,enterprise}` — the CLI enforces this set.
 - `--out PATH` — output directory (default: current working dir).
 - `--description STRING` — overrides default placeholder.
 - `--author STRING` — author field (default: empty placeholder).
@@ -64,10 +64,10 @@ dryade plugin validate ./my_plugin
 Checks (in order):
 
 1. Manifest schema (Draft 2020-12).
-2. `--tier community` rejection (Rule §11).
+2. `--tier community` rejection (`community` is not a valid plugin tier).
 3. `__init__.py` + `pyproject.toml` presence.
 4. Plugin Protocol conformance (`isinstance(plugin, Plugin)`).
-5. Custom-plugin-slot disclosure if relevant (D-10).
+5. Custom-plugin-slot disclosure if relevant.
 
 Exit `0` on success, `1` on first failure (each error is named in stdout).
 
@@ -83,7 +83,7 @@ dryade plugin package ./my_plugin --output ./dist
 **Options:**
 
 - `--output PATH` — output directory (default: `./dist/`).
-- `--no-verify` does not exist. Fail-closed (CLAUDE.md Rule §4).
+- `--no-verify` does not exist. Fail-closed.
 
 Output: `<name>-<version>.dryadepkg` — a gzipped tar archive containing:
 
@@ -95,7 +95,7 @@ Output: `<name>-<version>.dryadepkg` — a gzipped tar archive containing:
   source without unpacking the SBOM.
 - The plugin's `__init__.py`, `plugin.py`, and any other `.py` files.
 
-Author key material is **never** bundled (T-339-04-03 mitigation).
+Author key material is **never** bundled.
 
 ## `dryade plugin doctor`
 
@@ -121,4 +121,4 @@ The CLI honors:
 - `HOME` — author keys land under `$HOME/.dryade-author/`.
 
 It does **not** honor any `DRYADE_DISABLE_*` or `--unsafe-*` toggles —
-fail-closed everywhere (Rule §4 of CLAUDE.md).
+fail-closed everywhere.

@@ -1,8 +1,8 @@
 """dryade plugin package — produce a signed .dryadepkg for marketplace submission.
 
-Fail-closed (Rule §3, §4): a missing or unreadable author key exits non-zero
-with a clear `dryade plugin keygen` remediation. The command exposes no
-hash-bypass or signature-bypass option of any kind.
+Fail-closed: a missing or unreadable author key exits non-zero with a clear
+`dryade plugin keygen` remediation. The command exposes no hash-bypass or
+signature-bypass option of any kind.
 """
 
 from __future__ import annotations
@@ -25,18 +25,18 @@ def package_plugin(
     """Produce a signed `.dryadepkg` ready for marketplace submission."""
     plugin_dir = plugin_dir.resolve()
 
-    # 339-04b ships dryade_plugins_sdk.cli.keys. The 04a-only state surfaces a clear error.
+    # dryade_plugins_sdk.cli.keys provides the signing key. A missing install surfaces a clear error.
     try:
         # Re-resolve the path at call time (NOT at module-import time). The
         # AUTHOR_KEY_PRIV constant is frozen at keys.py import time against
         # whatever HOME was set then; in test suites that monkeypatch HOME
         # per test the constant would point at the wrong tmp_path. Compute
         # the path fresh from the current Path.home() value.
-        import dryade_plugins_sdk.cli.keys  # type: ignore[import-not-found]  # noqa: F401
+        import dryade_plugins_sdk.cli.keys  # noqa: F401
     except ImportError:
         typer.secho(
             "Author key infrastructure not present.\n"
-            "Run `dryade plugin keygen` first (ships in plan 339-04b).",
+            "Run `dryade plugin keygen` first.",
             fg=typer.colors.RED,
         )
         raise typer.Exit(code=1)

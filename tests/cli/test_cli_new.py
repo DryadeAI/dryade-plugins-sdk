@@ -1,15 +1,15 @@
-"""F4.2 BREAKER: scaffold output must pass lint_plugins.py against v2 schema.
-F4.3 BREAKER: scaffolded tests must be meaningful (not pass-no-op).
-F4.4: scaffold path must be discoverable from `dryade plugin new --help`.
-Rule §11: `--tier community` must be rejected.
+"""Scaffold (`dryade plugin new`) regression net.
+
+- Scaffold output must validate against the v2 schema.
+- Scaffolded tests must be meaningful (not pass-no-op).
+- The scaffold path must be discoverable from `dryade plugin new --help`.
+- `--tier community` must be rejected.
 """
 
 from __future__ import annotations
 
 import json
-import shutil
-import subprocess
-import sys
+import re
 from pathlib import Path
 
 import pytest
@@ -29,69 +29,43 @@ def test_scaffold_creates_dir(scaffolded_plugin: Path):
 
 
 def test_scaffold_manifest_is_v2(scaffolded_plugin: Path):
-    """F4.2: manifest_version must be exactly '2.0' and no entry_point (D-02)."""
+    """manifest_version must be exactly '2.0' and carry no entry_point."""
     manifest = json.loads((scaffolded_plugin / "dryade.json").read_text())
     assert manifest["manifest_version"] == "2.0"
-    assert "entry_point" not in manifest, "D-02: v2 manifests must not carry entry_point"
+    assert "entry_point" not in manifest, "v2 manifests must not carry entry_point"
     assert manifest["required_tier"] == "starter"
     assert manifest["name"] == "test_plugin"
 
 
-def test_scaffold_passes_lint(scaffolded_plugin: Path):
-    """F4.2 regression net — dryade-plugins/tools/lint_plugins.py must pass.
-
-    Calls the lint with an absolute path so the lint's REPO_ROOT-relative
-    arg-resolution falls through to the absolute-path branch (REPO_ROOT/arg
-    returns arg when arg is absolute).
-    """
-    repo_root = Path(__file__).resolve().parent.parent.parent
-    lint = repo_root / "dryade-plugins" / "tools" / "lint_plugins.py"
-    if not lint.exists():
-        pytest.skip(f"lint_plugins.py not found at {lint}")
-    # Stage scaffold under a fake tier dir so the lint's tier-cross-check passes.
-    staging = scaffolded_plugin.parent / "lint_root" / "starter"
-    staging.mkdir(parents=True)
-    plugin_in_tier = staging / scaffolded_plugin.name
-    shutil.copytree(scaffolded_plugin, plugin_in_tier)
-    result = subprocess.run(
-        [sys.executable, str(lint), str(plugin_in_tier)],
-        capture_output=True,
-        text=True,
-    )
-    assert result.returncode == 0, (
-        f"lint failed:\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
-    )
-
-
 def test_scaffold_tests_are_meaningful(scaffolded_plugin: Path):
-    """F4.3 regression net — scaffolded tests have assertions, not just `pass`."""
+    """Regression net — scaffolded tests have assertions, not just `pass`."""
     test_file = scaffolded_plugin / "tests" / "test_plugin.py"
     assert test_file.exists()
     text = test_file.read_text()
-    # At least 3 distinct assert statements per F4.3 must-have.
+    # At least 3 distinct assert statements.
     assert text.count("assert ") >= 3, (
-        f"F4.3: scaffolded test file must contain >=3 assertions, got {text.count('assert ')}"
+        f"scaffolded test file must contain >=3 assertions, got {text.count('assert ')}"
     )
     # No pass-noop bodies.
     assert "pass  # TODO" not in text
     assert "pass # TODO" not in text
     # At least 2 test functions (lifecycle + protocol minimum).
     test_count = text.count("def test_")
-    assert test_count >= 2, f"F4.3: expected >=2 test functions, got {test_count}"
+    assert test_count >= 2, f"expected >=2 test functions, got {test_count}"
 
 
 def test_scaffold_protocol_assertion_present(scaffolded_plugin: Path):
-    """F4.3: tests must assert Plugin Protocol conformance."""
+    """Scaffolded tests must assert Plugin Protocol conformance."""
     text = (scaffolded_plugin / "tests" / "test_plugin.py").read_text()
     assert "isinstance" in text and "Plugin" in text, (
-        "F4.3: scaffolded test must verify Plugin Protocol via isinstance check"
+        "scaffolded test must verify Plugin Protocol via isinstance check"
     )
 
 
 def test_scaffold_manifest_v2_assertion_present(scaffolded_plugin: Path):
-    """F4.3: tests must assert manifest validates against v2 schema."""
+    """Scaffolded tests must assert the manifest validates against the v2 schema."""
     text = (scaffolded_plugin / "tests" / "test_plugin.py").read_text()
-    assert "ManifestV2" in text, "F4.3: scaffolded test must round-trip ManifestV2"
+    assert "ManifestV2" in text, "scaffolded test must round-trip ManifestV2"
     assert "manifest_version" in text
 
 
@@ -103,17 +77,17 @@ def test_scaffold_pyproject_declares_sdk_dep(scaffolded_plugin: Path):
 
 
 def test_scaffold_plugin_module_imports_only_sdk(scaffolded_plugin: Path):
-    """D-05: scaffolded plugin.py must not import from core.*."""
+    """Scaffolded plugin.py must not import from core.*."""
     text = (scaffolded_plugin / "plugin.py").read_text()
     # Comment text was already scrubbed; check no actual import statements.
     for line in text.splitlines():
         stripped = line.strip()
         if stripped.startswith("from core") or stripped.startswith("import core"):
-            pytest.fail(f"D-05 violation: scaffolded plugin imports from core: {line!r}")
+            pytest.fail(f"violation: scaffolded plugin imports from core: {line!r}")
 
 
 def test_community_tier_rejected(runner, tmp_path, author_key_dir):
-    """Rule §11: --tier community must be rejected with non-zero exit."""
+    """--tier community must be rejected with non-zero exit."""
     result = runner.invoke(
         app,
         [
@@ -126,14 +100,16 @@ def test_community_tier_rejected(runner, tmp_path, author_key_dir):
             str(tmp_path),
         ],
     )
+    # The tier callback rejects `community` at parse time (non-zero exit)
+    # before any template renders. The rejection-message routing (stdout vs
+    # stderr) varies by Click/Typer version, so the stable contract is the
+    # non-zero exit plus the fact that nothing was scaffolded.
     assert result.exit_code != 0
-    # Typer's BadParameter writes to stdout in CliRunner output.
-    combined = (result.stdout or "") + (str(result.exception) or "")
-    assert "community" in combined.lower() or "starter" in combined.lower()
+    assert not (tmp_path / "bad_plugin").exists(), "community tier must not scaffold"
 
 
 def test_dev_tier_also_rejected(runner, tmp_path, author_key_dir):
-    """Rule §11 corollary: 'dev' is also not a real plugin tier."""
+    """Corollary: 'dev' is also not a real plugin tier."""
     result = runner.invoke(
         app,
         ["plugin", "new", "bad", "--tier", "dev", "--out", str(tmp_path)],
@@ -142,7 +118,7 @@ def test_dev_tier_also_rejected(runner, tmp_path, author_key_dir):
 
 
 def test_scaffold_mentions_slots(runner, tmp_path, author_key_dir):
-    """D-10 disclosure — scaffold output mentions slot consumption."""
+    """Disclosure — scaffold output mentions slot consumption."""
     result = runner.invoke(
         app,
         ["plugin", "new", "slot_test", "--tier", "starter", "--out", str(tmp_path)],
@@ -150,12 +126,12 @@ def test_scaffold_mentions_slots(runner, tmp_path, author_key_dir):
     assert result.exit_code == 0
     out = result.stdout.lower()
     assert "slot" in out or "custom_plugin_slots" in out, (
-        f"D-10: scaffold output must disclose slot consumption; got: {result.stdout!r}"
+        f"scaffold output must disclose slot consumption; got: {result.stdout!r}"
     )
 
 
 def test_scaffold_cross_links_security_disclosure(runner, tmp_path, author_key_dir):
-    """F6.5 partial closure — scaffold output cross-links to security-for-authors."""
+    """Scaffold output cross-links to security-for-authors."""
     result = runner.invoke(
         app,
         ["plugin", "new", "sec_link", "--tier", "starter", "--out", str(tmp_path)],
@@ -183,7 +159,13 @@ def test_scaffold_each_valid_tier(runner, tmp_path, author_key_dir):
 
 
 def test_scaffold_no_internal_repo_references(runner, tmp_path, author_key_dir):
-    """T-339-04a-03: scaffold output must contain no internal-repo references."""
+    """Scaffold output must contain no internal-repo references.
+
+    Sources the forbidden token patterns from the central leak-guard so the
+    literal tokens never appear in this file's own source.
+    """
+    from tests.test_no_internal_leaks import FORBIDDEN
+
     result = runner.invoke(
         app,
         ["plugin", "new", "leak_test", "--tier", "starter", "--out", str(tmp_path)],
@@ -193,43 +175,44 @@ def test_scaffold_no_internal_repo_references(runner, tmp_path, author_key_dir):
     for f in plugin_dir.rglob("*"):
         if f.is_file():
             text = f.read_text(errors="ignore")
-            for forbidden in ("dryade-internal", "192.168.", "gh_token", "/home/dryade"):
-                assert forbidden not in text, f"T-339-04a-03: forbidden token {forbidden!r} in {f}"
+            for name, pattern in FORBIDDEN.items():
+                assert not re.search(pattern, text), (
+                    f"forbidden token ({name}) leaked into scaffold file {f}"
+                )
 
 
 # ---------------------------------------------------------------------------
-# 339-07 additions — three-surface tier/slot disclosure regression net.
+# Three-surface tier/slot disclosure regression net.
 # ---------------------------------------------------------------------------
 
 
 def test_scaffold_prints_all_three_tier_ranges(runner, tmp_path, author_key_dir):
-    """D-10 + F7.4 — scaffold output spells out slot ranges for all three tiers."""
+    """Scaffold output spells out the tier model and per-tier slot ceilings."""
     result = runner.invoke(
         app,
         ["plugin", "new", "range_test", "--tier", "starter", "--out", str(tmp_path)],
     )
     assert result.exit_code == 0
     out = result.stdout.lower()
-    assert "starter" in out and ("1-3" in out or "1 to 3" in out), (
-        f"Scaffold must mention starter slot range. Output: {result.stdout}"
-    )
-    assert "team" in out and ("3-5" in out or "3 to 5" in out), (
-        f"Scaffold must mention team slot range. Output: {result.stdout}"
-    )
-    assert "enterprise" in out and "10" in out, (
-        f"Scaffold must mention enterprise slot range. Output: {result.stdout}"
+    # All three tier names are named in the install-reach disclosure.
+    for tier in ("starter", "team", "enterprise"):
+        assert tier in out, f"Scaffold must mention the {tier} tier. Output: {result.stdout}"
+    # The end-user per-tier slot ceilings are spelled out so authors see the
+    # slot economy without clicking through.
+    assert "5 / 15 / 25" in result.stdout, (
+        f"Scaffold must disclose the per-tier slot ceilings. Output: {result.stdout}"
     )
 
 
 def test_scaffold_links_to_both_docs_pages(runner, tmp_path, author_key_dir):
-    """3-surface coverage — scaffold cross-links to tiers.md AND security-for-authors.md."""
+    """Scaffold cross-links to the tier reference AND the security-for-authors page."""
     result = runner.invoke(
         app,
         ["plugin", "new", "link_test", "--tier", "starter", "--out", str(tmp_path)],
     )
     assert result.exit_code == 0
-    assert "/plugins/tiers" in result.stdout, "Must link to tiers.md"
-    assert "/plugins/security-for-authors" in result.stdout, "Must link to security-for-authors.md"
+    assert "docs/sdk/concepts" in result.stdout, "Must link to the tier reference"
+    assert "/plugins/security-for-authors" in result.stdout, "Must link to the security page"
 
 
 def test_scaffold_explicitly_states_community_invalid(runner, tmp_path, author_key_dir):

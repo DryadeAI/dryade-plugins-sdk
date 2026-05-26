@@ -1,12 +1,13 @@
 """dryade plugin new — scaffold a new Dryade plugin from jinja2 templates.
 
-F4.2: every emitted dryade.json validates against the v2 schema.
-F4.3: every emitted tests/test_plugin.py ships meaningful assertions.
-D-02: emitted manifest carries no entry_point (callers register via plugin.register).
-D-05: emitted plugin.py imports only from dryade_plugins_sdk.
-D-10: scaffold output discloses custom_plugin_slots consumption.
-F6.5: scaffold output cross-links to the security-for-authors page.
-Rule §11: --tier values are constrained to {starter, team, enterprise}.
+Guarantees:
+- every emitted dryade.json validates against the v2 schema.
+- every emitted tests/test_plugin.py ships meaningful assertions.
+- emitted manifest carries no entry_point (callers register via plugin.register).
+- emitted plugin.py imports only from dryade_plugins_sdk.
+- scaffold output discloses custom_plugin_slots consumption.
+- scaffold output cross-links to the security-for-authors page.
+- --tier values are constrained to {starter, team, enterprise}.
 
 Tier rendering: starter ships the full 7-file base. Team and enterprise
 layer 3 overlay files (dryade.json, plugin.py, tests/test_plugin.py) on
@@ -41,10 +42,12 @@ def _render_tier(
     template_root: Path,
 ) -> None:
     """Render the starter base, then overlay the tier-specific delta files."""
-    env_kwargs = {"keep_trailing_newline": True, "autoescape": False}
-
     base_dir = template_root / "starter"
-    env_base = Environment(loader=FileSystemLoader(str(base_dir)), **env_kwargs)
+    env_base = Environment(
+        loader=FileSystemLoader(str(base_dir)),
+        keep_trailing_newline=True,
+        autoescape=False,
+    )
     for tpl_path in sorted(base_dir.rglob("*.j2")):
         rel = tpl_path.relative_to(base_dir)
         out_rel = Path(str(rel).removesuffix(".j2"))
@@ -63,7 +66,11 @@ def _render_tier(
         # defensive only.
         return
 
-    env_overlay = Environment(loader=FileSystemLoader(str(overlay_dir)), **env_kwargs)
+    env_overlay = Environment(
+        loader=FileSystemLoader(str(overlay_dir)),
+        keep_trailing_newline=True,
+        autoescape=False,
+    )
     for tpl_path in sorted(overlay_dir.rglob("*.j2")):
         rel = tpl_path.relative_to(overlay_dir)
         out_rel = Path(str(rel).removesuffix(".j2"))
@@ -109,11 +116,11 @@ def new_plugin(
         )
         raise typer.Exit(code=1)
 
-    # Auto-keygen if available and no author key (D-08 friction-free first run).
-    # 339-04b ships keys.py + generate_author_keypair; soft-import so 04a-only
-    # state still scaffolds cleanly.
+    # Auto-keygen if available and no author key (friction-free first run).
+    # keys.py + generate_author_keypair are soft-imported so the scaffold still
+    # works cleanly when they are not installed.
     try:
-        from dryade_plugins_sdk.cli.keys import (  # type: ignore[import-not-found]
+        from dryade_plugins_sdk.cli.keys import (
             AUTHOR_KEY_PRIV,
             generate_author_keypair,
         )
@@ -129,7 +136,7 @@ def new_plugin(
                 fg=typer.colors.YELLOW,
             )
     except ImportError:
-        # 04b adds keys.py; 04a-only state defers to explicit `dryade plugin keygen`.
+        # When keys.py is unavailable, defer to explicit `dryade plugin keygen`.
         pass
 
     template_root = Path(str(resources.files("dryade_plugins_sdk.cli") / "templates"))
@@ -152,7 +159,7 @@ def new_plugin(
     target.mkdir(parents=True)
     _render_tier(target, tier, ctx, template_root)
 
-    # "Next steps" — F6.5 wiring. Mentions validate + package, never dryade-pm.
+    # "Next steps" — author-facing workflow. Mentions validate + package + submit.
     typer.secho(
         f"\nScaffolded {tier}-tier plugin at {target}",
         fg=typer.colors.GREEN,
@@ -164,16 +171,11 @@ def new_plugin(
     typer.echo("  pytest")
     typer.echo("  dryade plugin validate .")
     typer.echo("  dryade plugin package .")
-    typer.echo()
-    typer.echo("For local Dryade dev iteration:")
-    typer.echo("  dryade-pm push --plugins-dir <parent-dir-of-this-plugin>")
-    typer.echo("  # then SIGHUP your local Dryade gunicorn master so it re-imports:")
-    typer.echo("  kill -HUP $(pgrep -f \"gunicorn.*core.api.main\" | head -1)")
+    typer.echo("  # then submit the .dryadepkg to the marketplace")
 
-    # D-10 + F7.4 slot disclosure — three reinforcing surfaces (CLI help,
-    # this scaffold output, and security-for-authors.md §5). Spell out the
-    # slot ranges so authors don't have to click through to learn the
-    # marketplace's slot economy.
+    # Slot disclosure across reinforcing surfaces (CLI help, this scaffold
+    # output, and the security-for-authors docs). Spell out the slot ranges so
+    # authors don't have to click through to learn the marketplace's slot economy.
     typer.echo()
     typer.secho("Tier and slots:", bold=True)
     typer.echo(f"  Your plugin's required_tier is '{tier}' — that controls which end-user")
@@ -186,7 +188,7 @@ def new_plugin(
     typer.echo("  of which tier-license your customer holds.")
     typer.echo("  Tier reference:         https://dryade.ai/docs/sdk/concepts")
 
-    # F6.5 cross-link to security disclosure (page authored in 339-06).
+    # Cross-link to the security-for-authors page.
     typer.echo()
     typer.secho("Security model:", bold=True)
     typer.echo(
@@ -194,8 +196,8 @@ def new_plugin(
     )
     typer.echo("  Author obligations:     https://docs.dryade.ai/plugins/security-for-authors")
 
-    # Rule §11 disclosure — third surface (after CLI --help and validate_tier
-    # callback). Reinforces that community is NOT a valid required_tier.
+    # Tier disclosure — third surface (after CLI --help and the validate_tier
+    # callback). Reinforces that community is not a valid required_tier.
     typer.echo()
     typer.secho(
         "'community' is NOT a valid required_tier.",

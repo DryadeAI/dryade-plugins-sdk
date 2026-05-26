@@ -12,7 +12,7 @@ and covers vulnerability reporting.
 - `~/.dryade-author/dev-key.priv` — mode `0o600`, fail-closed at load.
 - `~/.dryade-author/dev-key.pub` — embedded into the `.dryadepkg`.
 
-The CLI refuses to load keys with weaker permissions (D-08). Rotate by
+The CLI refuses to load keys with weaker permissions. Rotate by
 re-running keygen; the marketplace tracks public-key fingerprints, so
 old signatures remain valid for already-submitted packages.
 
@@ -20,7 +20,7 @@ old signatures remain valid for already-submitted packages.
 by the scaffolder excludes `~/.dryade-author/` already; if you create
 custom paths, ignore those too.
 
-## Hash conformance (Rule §9)
+## Hash conformance
 
 Every plugin source file (every `.py` under your plugin directory, excluding
 `__pycache__/`) gets dual-hashed:
@@ -37,7 +37,7 @@ on-disk source drifts from the manifest-embedded hash. Authors who
 modify code after packaging must re-run `dryade plugin package` to
 produce a fresh signed archive.
 
-## Tier slots (Rule §11)
+## Tier slots
 
 `required_tier` must be `starter`, `team`, or `enterprise`. **Never
 `community`.** The CLI rejects `community` at scaffold + validate +
@@ -59,8 +59,8 @@ customer's tier must be ≥ this value.
 The plugin runs after the host has already loaded the allowlist and
 verified your signature. From inside a plugin you cannot:
 
-- Read the customer's `~/.dryade/allowed-plugins.json`.
-- Read the PM's TOFU-pinned signing key.
+- Read the customer's allowlist.
+- Read the platform's pinned signing key.
 - Force a re-signing pass.
 
 Your Leash sandbox + the Plugin Tool Bridge enforce these boundaries.

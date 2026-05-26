@@ -1,6 +1,6 @@
 """FakeHost — in-memory host implementing Plugin's Registry contract.
 
-D-07: authors can pytest plugins without spinning up Dryade core.
+Authors can pytest plugins without spinning up the host runtime.
 
 This module has ZERO core.* imports.
 """

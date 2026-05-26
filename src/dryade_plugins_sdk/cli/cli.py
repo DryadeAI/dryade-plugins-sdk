@@ -11,16 +11,16 @@ from __future__ import annotations
 import typer
 
 # Re-export VALID_TIERS / validate_tier for backwards compatibility with any
-# Task 1 callers that imported from dryade_plugins_sdk.cli.cli before the helper moved
-# into dryade_plugins_sdk.cli._tier (broken to escape a circular import once command
-# modules began consuming the callback). Rule §11: 'community' is NOT a valid
+# callers that imported from dryade_plugins_sdk.cli.cli before the helper moved
+# into dryade_plugins_sdk.cli._tier (split out to escape a circular import once
+# command modules began consuming the callback). 'community' is not a valid
 # plugin tier and the callback at dryade_plugins_sdk.cli._tier.validate_tier rejects it
 # at parse time before any template renders.
 from dryade_plugins_sdk.cli.commands.new import new_plugin
 from dryade_plugins_sdk.cli.commands.package import package_plugin
 from dryade_plugins_sdk.cli.commands.validate import validate_plugin
 
-# 339-04b adds keygen + doctor — soft-imported so 339-04a alone can land:
+# keygen + doctor are soft-imported so the core CLI works without them:
 try:
     from dryade_plugins_sdk.cli.commands.doctor import doctor
     from dryade_plugins_sdk.cli.commands.keygen import keygen

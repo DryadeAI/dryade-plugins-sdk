@@ -1,4 +1,4 @@
-"""SDK ManifestV2 dataclass must accept a v2 manifest dict (consumes 339-02 schema)."""
+"""SDK ManifestV2 dataclass must accept a v2 manifest dict (consumes the v2 schema)."""
 
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ def test_minimal_v2_manifest_accepted() -> None:
 
 
 def test_v1_manifest_rejected() -> None:
-    """v1 manifests must raise ``ManifestValidationError`` (D-01 hard cutover)."""
+    """v1 manifests must raise ``ManifestValidationError`` (hard cutover)."""
     with pytest.raises(ManifestValidationError):
         ManifestV2(
             manifest_version="1.0",  # v1 — must reject
@@ -39,14 +39,14 @@ def test_v1_manifest_rejected() -> None:
 
 
 def test_community_tier_rejected() -> None:
-    """Rule §11: ``required_tier`` never accepts 'community'."""
+    """``required_tier`` never accepts 'community'."""
     with pytest.raises(ManifestValidationError):
         ManifestV2(
             manifest_version="2.0",
             name="example",
             version="1.0.0",
             description="x",
-            required_tier="community",  # invalid per Rule §11
+            required_tier="community",  # not a valid plugin tier
             author="me",
             core_version_constraint=">=1.0.0",
         )
@@ -54,7 +54,7 @@ def test_community_tier_rejected() -> None:
 
 @pytest.mark.parametrize("tier", ["starter", "team", "enterprise"])
 def test_starter_team_enterprise_accepted(tier: str) -> None:
-    """Rule §11 positive cases — every documented tier name validates."""
+    """Positive cases — every documented tier name validates."""
     m = ManifestV2(
         manifest_version="2.0",
         name="tier_probe",

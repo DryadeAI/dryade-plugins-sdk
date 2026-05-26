@@ -4,7 +4,7 @@ Authors satisfy this protocol structurally — no inheritance required. Core use
 ``isinstance(obj, Plugin)`` to verify at load time, which works because Plugin
 is decorated with @runtime_checkable.
 
-This module has ZERO core.* imports (D-05).
+This module has zero host-runtime imports — it is a pure contract.
 """
 
 from __future__ import annotations
@@ -18,9 +18,9 @@ from typing import Any, Callable, Protocol, runtime_checkable
 class HealthCheck:
     """Plugin-declared health check.
 
-    Lifted from core's PluginHealthCheck dataclass shape — pure data, no behavior change.
-    Attributes match core/ee/plugins_ee.py:84-103 so plugins built against the SDK
-    drop straight into the existing core health monitoring system.
+    Mirrors the host's health-check shape — pure data, no behavior change.
+    Attributes match the host contract so plugins built against the SDK drop
+    straight into the host health monitoring system.
     """
 
     name: str
@@ -34,7 +34,7 @@ class HealthCheck:
 class ManageableComponent:
     """Plugin-declared manageable runtime component.
 
-    Lifted from core's ManageableComponent dataclass shape (core/ee/plugins_ee.py:106-127).
+    Mirrors the host's manageable-component shape.
     """
 
     name: str
@@ -166,13 +166,12 @@ class Plugin(Protocol):
         startup, shutdown, get_health_checks, get_manageable_components
 
     Authors satisfy this protocol structurally. The runtime_checkable decorator
-    enables ``isinstance(plugin, Plugin)`` checks in core's loader gate at
-    Dryade/core/core/ee/plugins_ee.py:434.
+    enables ``isinstance(plugin, Plugin)`` checks in the host's loader gate.
 
-    Security boundary note (T-339-03a-01): @runtime_checkable only validates
-    attribute presence, NOT types or method signatures. The Protocol is a
-    structural contract — the signed allowlist + plugin hash verification
-    remain the authoritative security boundary (Rule §1, §7, §9).
+    Security boundary note: @runtime_checkable only validates attribute
+    presence, NOT types or method signatures. The Protocol is a structural
+    contract — the signed allowlist and plugin-hash verification remain the
+    authoritative security boundary.
     """
 
     name: str

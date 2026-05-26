@@ -1,19 +1,18 @@
 """`.dryadepkg` builder — produces a marketplace submission artifact.
 
 Format: gzipped tar containing the plugin's source tree plus a re-signed
-dryade.json carrying both plugin_hash_sha256 + plugin_hash_sha3_256 (Rule §9
-contract v4) and a 128-char hex Ed25519 signature from the author's
+dryade.json carrying both plugin_hash_sha256 + plugin_hash_sha3_256 (the
+dual-hash contract, v4) and a 128-char hex Ed25519 signature from the author's
 ~/.dryade-author/dev-key.priv key.
 
-339-04b ships ``dryade_plugins_sdk.cli.keys`` (which exports ``load_author_private_key``
-and the canonical key path). This module imports the key loader LAZILY so the
-04a-only state surfaces a clear "Run keygen first" error rather than a Python
+``dryade_plugins_sdk.cli.keys`` exports ``load_author_private_key`` and the
+canonical key path. This module imports the key loader LAZILY so a missing
+install surfaces a clear "Run keygen first" error rather than a Python
 ImportError stacktrace.
 
 Security invariants:
   - EXCLUDED_PATTERNS contains ``.dryade-author`` so the author's private key
-    is NEVER bundled, even if the author left a stray copy in the plugin dir
-    (T-339-04a-06 mitigation).
+    is NEVER bundled, even if the author left a stray copy in the plugin dir.
   - Signature is computed over the same canonical bytes the workbench JS
     verifier reads, so cross-runtime verification stays parity-clean.
 """
@@ -51,7 +50,7 @@ EXCLUDED_PATH_FRAGMENTS = {
     "dist",
     "build",
     ".egg-info",
-    ".dryade-author",  # NEVER bundle author key — T-339-04a-06
+    ".dryade-author",  # NEVER bundle author key
 }
 
 
@@ -91,7 +90,7 @@ def build_dryadepkg(plugin_dir: Path, output_dir: Path) -> Path:
     """
     # Lazy import so 04a-only state surfaces a clear error rather than
     # a missing-module stacktrace.
-    from dryade_plugins_sdk.cli.keys import load_author_private_key  # type: ignore[import-not-found]
+    from dryade_plugins_sdk.cli.keys import load_author_private_key
 
     manifest_path = plugin_dir / "dryade.json"
     if not manifest_path.exists():

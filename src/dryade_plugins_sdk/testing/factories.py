@@ -1,6 +1,6 @@
 """Factory helpers for building Plugin / Agent / Tool stubs in tests.
 
-D-07: stdlib-only, no dependency on Dryade core.
+Stdlib-only, with no dependency on the host runtime.
 """
 
 from __future__ import annotations
@@ -43,7 +43,7 @@ class _StubPlugin:
 
 def build_plugin(**kwargs: Any) -> Plugin:
     """Build a stub Plugin that satisfies the :class:`Plugin` Protocol structurally."""
-    return _StubPlugin(**kwargs)  # type: ignore[return-value]
+    return _StubPlugin(**kwargs)
 
 
 def build_agent(name: str, capability: str = "test") -> Any:

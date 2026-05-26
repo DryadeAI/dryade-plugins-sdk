@@ -1,6 +1,6 @@
 """Plugin logging helper — thin wrapper over stdlib logging.
 
-This module has ZERO core.* imports (D-05).
+This module has zero host-runtime imports — it is a pure contract.
 """
 
 from __future__ import annotations

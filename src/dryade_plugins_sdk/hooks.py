@@ -4,7 +4,7 @@ Plugin authors annotate their functions with @traced and @hook; the host's
 observability layer detects the marker attributes and wraps the call with an
 OpenTelemetry span or a lifecycle subscription.
 
-This module has ZERO core.* imports (D-05).
+This module has zero host-runtime imports — it is a pure contract.
 """
 
 from __future__ import annotations

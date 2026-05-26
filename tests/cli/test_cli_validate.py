@@ -56,7 +56,7 @@ def test_fails_closed_on_missing_dryade_json(runner, scaffolded_plugin: Path):
 
 
 def test_no_skip_validation_flag(runner):
-    """Rule §3/§5: --skip-validation / --bypass / --unsafe must NOT exist."""
+    """Fail-closed: --skip-validation / --bypass / --unsafe must NOT exist."""
     result = runner.invoke(app, ["plugin", "validate", "--help"])
     text = result.stdout
     assert "--skip-validation" not in text
@@ -66,7 +66,7 @@ def test_no_skip_validation_flag(runner):
 
 
 def test_community_tier_in_manifest_rejected(runner, scaffolded_plugin: Path):
-    """Rule §11 (SDK side): manifest with required_tier=community must be rejected."""
+    """SDK side: manifest with required_tier=community must be rejected."""
     sys.modules.pop("test_plugin", None)
     manifest_path = scaffolded_plugin / "dryade.json"
     data = json.loads(manifest_path.read_text())
@@ -77,13 +77,13 @@ def test_community_tier_in_manifest_rejected(runner, scaffolded_plugin: Path):
 
 
 # ---------------------------------------------------------------------------
-# 339-07 additions — F7.4 defense-in-depth: CLI-level Rule §11 gate in validate.
+# Defense-in-depth: CLI-level tier gate in validate.
 # ---------------------------------------------------------------------------
 
 
 def test_validate_rejects_community_manifest_with_helpful_message(runner, scaffolded_plugin: Path):
-    """F7.4 defense-in-depth — validate rejects manifest with required_tier='community'
-    and prints a Rule §11 reference + docs URL."""
+    """Defense-in-depth — validate rejects a manifest with required_tier='community'
+    and prints a valid-tiers reference + docs URL."""
     sys.modules.pop("test_plugin", None)
     manifest_path = scaffolded_plugin / "dryade.json"
     m = json.loads(manifest_path.read_text())
@@ -97,7 +97,7 @@ def test_validate_rejects_community_manifest_with_helpful_message(runner, scaffo
 
 
 def test_validate_does_not_have_skip_tier_check_flag(runner):
-    """Rule §5 — no `--skip-tier-check` or `--allow-community-tier` flag exists."""
+    """Fail-closed — no `--skip-tier-check` or `--allow-community-tier` flag exists."""
     result = runner.invoke(app, ["plugin", "validate", "--help"])
     assert "--skip-tier-check" not in result.stdout
     assert "--allow-community-tier" not in result.stdout

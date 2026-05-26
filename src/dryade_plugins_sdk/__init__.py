@@ -3,11 +3,11 @@
 PURE CONTRACT: zero imports from the host runtime. Authors satisfy these protocols structurally — the runtime checks shape, not inheritance.
 
 This module re-exports the stable public surface:
-  - Core protocols (339-03a): Plugin / Agent / Tool / Route / Config + supporting models
-  - Supporting protocols (339-03b): KV / Leash / IsolationLevel
-  - Packaging primitives (339-03b): compute_plugin_hash_pair / sign_manifest /
-    CONTRACT_VERSION (Rule §9 dual-hash contract v4)
-  - Hook decorators (339-03b): traced / hook (no-op shims; host wraps at runtime)
+  - Core protocols: Plugin / Agent / Tool / Route / Config + supporting models
+  - Supporting protocols: KV / Leash / IsolationLevel
+  - Packaging primitives: compute_plugin_hash_pair / sign_manifest /
+    CONTRACT_VERSION (the dual-hash plugin contract: SHA-256 + SHA3-256)
+  - Hook decorators: traced / hook (no-op shims; host wraps at runtime)
   - Exception hierarchy: DryadePluginError + four children
   - ManifestV2 dataclass validating against the bundled v2 JSON schema
 """
@@ -53,10 +53,10 @@ from dryade_plugins_sdk.packaging import (
 )
 
 __version__ = "1.1.2"
-__contract_version__ = 4  # SHA-256 + SHA3-256 dual hash (Rule §9)
+__contract_version__ = 4  # SHA-256 + SHA3-256 dual hash
 
 __all__ = [
-    # Core protocols (339-03a)
+    # Core protocols
     "Plugin",
     "HealthCheck",
     "ManageableComponent",
@@ -74,11 +74,11 @@ __all__ = [
     "collect_routes",
     "build_router",
     "Config",
-    # Supporting protocols (339-03b)
+    # Supporting protocols
     "KV",
     "Leash",
     "IsolationLevel",
-    # Hook decorators (339-03b)
+    # Hook decorators
     "traced",
     "hook",
     # Exceptions
@@ -89,7 +89,7 @@ __all__ = [
     "HashMismatchError",
     # Manifest
     "ManifestV2",
-    # Packaging primitives (339-03b)
+    # Packaging primitives
     "CONTRACT_VERSION",
     "compute_plugin_hash_pair",
     "sign_manifest",

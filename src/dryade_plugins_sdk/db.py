@@ -1,10 +1,10 @@
 """Database session Protocol — minimal contract.
 
 Plugins should NOT define their own SQLAlchemy Base — they get host.db.Base.
-F3.9 finding tracked: per-plugin Base classes break Alembic; the SDK declares
-the session contract here, the host injects a single shared Base when needed.
+Per-plugin Base classes break migrations; the SDK declares the session
+contract here, and the host injects a single shared Base when needed.
 
-This module has ZERO core.* imports (D-05).
+This module has zero host-runtime imports — it is a pure contract.
 """
 
 from __future__ import annotations

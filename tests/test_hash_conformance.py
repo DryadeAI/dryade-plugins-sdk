@@ -1,10 +1,10 @@
-"""Rule §9 contract v4: SDK ``compute_plugin_hash_pair`` MUST be byte-identical
-to core's ``_compute_plugin_hash_pair``.
+"""Contract v4: SDK ``compute_plugin_hash_pair`` MUST be byte-identical to the
+host runtime's plugin-hash algorithm.
 
 This test independently recomputes both digests using only stdlib ``hashlib``
 and asserts equality with the SDK function's output. If the SDK drifts from
-core's algorithm, this test catches it before plugins built with the SDK fail
-core's on-disk hash gate.
+the host's algorithm, this test catches it before plugins built with the SDK
+fail the host's on-disk hash gate.
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ def test_hash_pair_matches_canonical_algorithm(sample_plugin: Path) -> None:
     sha256_hex, sha3_256_hex = compute_plugin_hash_pair(sample_plugin)
 
     # Independent re-computation using only stdlib hashlib, mirroring the
-    # canonical algorithm in plugin_security.ee.py:119.
+    # canonical host algorithm.
     py_files: list[Path] = []
 
     def collect_py(directory: Path) -> None:
@@ -63,7 +63,7 @@ def test_hash_pair_matches_canonical_algorithm(sample_plugin: Path) -> None:
 
 
 def test_hash_changes_on_file_edit(sample_plugin: Path) -> None:
-    """Editing a .py file invalidates both digests (Rule §9 freshness)."""
+    """Editing a .py file invalidates both digests (hash freshness)."""
     sha256_before, sha3_before = compute_plugin_hash_pair(sample_plugin)
     target = sample_plugin / "plugin.py"
     target.write_text(target.read_text() + "\n# edit\n")

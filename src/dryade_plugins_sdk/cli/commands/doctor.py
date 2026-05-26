@@ -1,21 +1,20 @@
-"""``dryade plugin doctor`` — author-side diagnostic (D-12).
+"""``dryade plugin doctor`` — author-side diagnostic.
 
 Walks a plugin directory and reports common authoring mistakes BEFORE the
 plugin gets submitted to the marketplace:
 
 - Missing ``dryade.json`` / unparseable JSON.
-- ``manifest_version`` != ``"2.0"`` (Phase 339-02 closed v1 schema).
-- ``required_tier`` == ``"community"`` (Rule §11 violation).
+- ``manifest_version`` != ``"2.0"`` (v1 schema is closed).
+- ``required_tier`` == ``"community"`` (not a valid plugin tier).
 - ``plugin_hash_sha256`` baked into the manifest no longer matches what
   ``compute_plugin_hash_pair`` produces on the current source tree —
-  Rule §9 freshness gate: editing a ``.py`` invalidates the prior package
-  signature. Doctor catches this BEFORE allowlist push so the author
-  doesn't ship a stale .dryadepkg.
-- Missing ``pyproject.toml`` (required by ``lint_plugins.py``).
+  a hash-freshness gate: editing a ``.py`` invalidates the prior package
+  signature. Doctor catches this BEFORE submission so the author doesn't
+  ship a stale .dryadepkg.
+- Missing ``pyproject.toml`` (required for packaging).
 
-Doctor is the author-side counterpart to F4.8 — lint never verifies
-signatures or hash freshness. Doctor runs locally; end-user doctor for
-allowlist-rejection diagnosis is deferred to Phase 341.
+Doctor is the author-side counterpart to packaging lint — lint never verifies
+signatures or hash freshness. Doctor runs locally.
 
 NO ``--skip-hash-check``, ``--quiet``, or ``--allow-stale`` flags exist.
 Every issue surfaces with an explicit, actionable remediation pointer.
@@ -25,7 +24,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Any
 
 import typer
 from dryade_plugins_sdk.packaging import compute_plugin_hash_pair
@@ -50,7 +49,7 @@ def doctor(
 
     # 1. Manifest exists + parses.
     manifest_path = plugin_dir / "dryade.json"
-    manifest: dict = {}
+    manifest: dict[str, Any] = {}
     if not manifest_path.exists():
         issues.append("Missing dryade.json")
     else:
@@ -60,7 +59,7 @@ def doctor(
             issues.append(f"Manifest invalid JSON: {e}")
             manifest = {}
 
-        # 2. Stale hash detection (Rule §9 freshness).
+        # 2. Stale hash detection (hash freshness).
         embedded_sha256 = manifest.get("plugin_hash_sha256")
         if embedded_sha256:
             try:
@@ -76,7 +75,7 @@ def doctor(
                         "Re-run `dryade plugin package` to refresh the signed bundle."
                     )
 
-        # 3. Manifest version check (must be v2 after Phase 339-02).
+        # 3. Manifest version check (must be v2).
         manifest_version = manifest.get("manifest_version")
         if manifest_version and manifest_version != "2.0":
             issues.append(
@@ -84,15 +83,15 @@ def doctor(
                 "Run `dryade plugin validate` for the full schema diff."
             )
 
-        # 4. Required tier check (Rule §11 — community is not a valid tier).
+        # 4. Required tier check (community is not a valid tier).
         required_tier = manifest.get("required_tier")
         if required_tier == "community":
             issues.append(
-                "Rule §11 violation: required_tier='community' is not allowed. "
+                "required_tier='community' is not allowed. "
                 "Valid tiers: starter, team, enterprise."
             )
 
-    # 5. pyproject.toml presence (required by tools/lint_plugins.py).
+    # 5. pyproject.toml presence (required for packaging).
     if not (plugin_dir / "pyproject.toml").exists():
         issues.append("Missing pyproject.toml")
 
