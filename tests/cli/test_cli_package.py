@@ -1,9 +1,8 @@
 """package command — produces .dryadepkg with v2 manifest + 128-char hex signature.
 
-339-04a-only state caveat: the package command depends on
-``dryade_cli.keys`` (which 339-04b ships). The success-path test
-auto-skips when that module is not yet importable. The fail-closed
-test still runs in 04a-only state — it asserts the package command
+Caveat: the package command depends on the ``dryade_plugins_sdk.cli.keys`` module. The
+success-path test auto-skips when that module is not yet importable. The
+fail-closed test still runs without it — it asserts the package command
 exits non-zero with a clear "Run keygen first" message.
 """
 
@@ -19,10 +18,10 @@ from pathlib import Path
 import pytest
 from dryade_plugins_sdk.cli.cli import app
 
-_KEYS_AVAILABLE = importlib.util.find_spec("dryade_cli.keys") is not None
+_KEYS_AVAILABLE = importlib.util.find_spec("dryade_plugins_sdk.cli.keys") is not None
 
 
-@pytest.mark.skipif(not _KEYS_AVAILABLE, reason="339-04b's dryade_cli.keys not yet shipped")
+@pytest.mark.skipif(not _KEYS_AVAILABLE, reason="dryade_plugins_sdk.cli.keys module not available")
 def test_dryadepkg_format(runner, scaffolded_plugin: Path, tmp_path, fake_author_key):
     """Successful package produces a v2-manifest .dryadepkg with 128-char hex signature."""
     sys.modules.pop("test_plugin", None)
@@ -63,7 +62,7 @@ def test_package_fails_without_keygen(runner, scaffolded_plugin: Path, tmp_path,
 
 
 def test_no_skip_hash_or_force_flags(runner):
-    """Rule §3/§5: --skip-hash / --force-package / --unsafe-bundle must NOT exist."""
+    """Fail-closed: --skip-hash / --force-package / --unsafe-bundle must NOT exist."""
     result = runner.invoke(app, ["plugin", "package", "--help"])
     text = result.stdout
     assert "--skip-hash" not in text
@@ -72,11 +71,11 @@ def test_no_skip_hash_or_force_flags(runner):
     assert "--bypass" not in text
 
 
-@pytest.mark.skipif(not _KEYS_AVAILABLE, reason="339-04b's dryade_cli.keys not yet shipped")
+@pytest.mark.skipif(not _KEYS_AVAILABLE, reason="dryade_plugins_sdk.cli.keys module not available")
 def test_dryadepkg_excludes_author_key_dir(
     runner, scaffolded_plugin: Path, tmp_path, fake_author_key
 ):
-    """T-339-04a-06: bundle must NEVER include the author's private key directory."""
+    """Bundle must NEVER include the author's private key directory."""
     sys.modules.pop("test_plugin", None)
     # Plant a stray .dryade-author/ inside the scaffold to prove EXCLUDED_PATTERNS catches it.
     stray = scaffolded_plugin / ".dryade-author"
@@ -93,5 +92,5 @@ def test_dryadepkg_excludes_author_key_dir(
         names = tf.getnames()
         for n in names:
             assert ".dryade-author" not in n, (
-                f"T-339-04a-06: bundle must not include .dryade-author/; saw {n}"
+                f"bundle must not include .dryade-author/; saw {n}"
             )

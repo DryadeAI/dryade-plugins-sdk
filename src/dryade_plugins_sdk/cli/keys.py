@@ -1,8 +1,8 @@
 """Author key management.
 
-D-08: keys live at ``~/.dryade-author/`` (NOT ``~/.dryade/`` — end-user state).
-Format: raw 32-byte Ed25519 (matches ``scripts/sign_plugins.py:99-109``).
-Perms: priv key 0o600, parent dir 0o700.
+Keys live at ``~/.dryade-author/`` (a separate directory from ``~/.dryade/``,
+which holds end-user state). Format: raw 32-byte Ed25519, matching the format
+the host's signer expects. Perms: priv key 0o600, parent dir 0o700.
 
 Consumed by:
 - ``dryade_plugins_sdk.cli.pkg.build_dryadepkg`` (via ``load_author_private_key``, lazy import)
@@ -17,13 +17,13 @@ from pathlib import Path
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
-# D-08 storage path. The author dev key lives under ~/.dryade-author/ — a
-# DIFFERENT directory from ~/.dryade/ which is reserved for end-user PM
-# state (license, allowlist, pubkey TOFU). Mixing these would let a stray
-# `pip install dryade-cli` leak the dev key into the end-user runtime
-# directory and vice-versa.
+# Storage path. The author dev key lives under ~/.dryade-author/ — a
+# DIFFERENT directory from ~/.dryade/ which is reserved for end-user runtime
+# state (license, allowlist, pinned pubkey). Mixing these would let a stray
+# `pip install` leak the dev key into the end-user runtime directory and
+# vice-versa.
 #
-# These module-level constants document the canonical path layout for D-08.
+# These module-level constants document the canonical path layout.
 # They are computed once at import time. Production CLI invocations run in
 # a fresh process where HOME does not move, so the constants resolve
 # correctly. The internal helper `_author_paths()` is used inside this
@@ -57,8 +57,8 @@ def generate_author_keypair(force: bool = False) -> tuple[str, str]:
 
     Returns:
         ``(priv_hex, pub_hex)`` — both hex-encoded. Callers MUST NOT print
-        ``priv_hex`` (T-339-04b-03 mitigation). The return is exposed only so
-        tests can assert the private bytes never reached stdout.
+        ``priv_hex``. The return is exposed only so tests can assert the
+        private bytes never reached stdout.
 
     Raises:
         FileExistsError: when the priv key already exists and force is False.
@@ -102,7 +102,7 @@ def load_author_private_key() -> Ed25519PrivateKey:
         FileNotFoundError: with a remediation pointing the author at
             ``dryade plugin keygen`` when the key is absent.
         ValueError: when the on-disk bytes are not a raw 32-byte Ed25519 key
-            (matches ``scripts/sign_plugins.py:99-109`` format constraint).
+            (the format the host's signer expects).
     """
     _, key_priv, _ = _author_paths()
     if not key_priv.exists():

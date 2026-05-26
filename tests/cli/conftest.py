@@ -36,9 +36,9 @@ def author_key_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 def _write_fake_author_key(author_key_dir: Path) -> Path:
     """Write a raw 32-byte Ed25519 key into ``author_key_dir / dev-key.priv``.
 
-    339-04b ships ``dryade plugin keygen`` which writes the real key. While
-    that command is not yet available (this plan ships 04a only), we fabricate
-    a deterministic key so tests can exercise the package signing flow.
+    ``dryade plugin keygen`` writes the real key. When that command is not yet
+    available, we fabricate a deterministic key so tests can exercise the
+    package signing flow.
     """
     from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
@@ -68,8 +68,8 @@ def scaffolded_plugin(
 
     Generates a starter-tier scaffold at ``tmp_path / "test_plugin"``. Does NOT
     pre-generate the author key — tests that need a key call ``fake_author_key``
-    explicitly. (339-04b's keygen subcommand isn't shipped yet; this design lets
-    the test suite work in 04a-only state.)
+    explicitly. (This design lets the test suite work even when the keygen
+    subcommand isn't available yet.)
     """
     out_dir = tmp_path
     result = runner.invoke(

@@ -1,12 +1,12 @@
-"""D-08 / T-339-04b-01 / T-339-04b-02 / T-339-04b-03 — keygen contract tests.
+"""keygen contract tests.
 
 Locks down:
-- ``~/.dryade-author/`` is the canonical storage path (D-08), separate from
+- ``~/.dryade-author/`` is the canonical storage path, separate from
   ``~/.dryade/``.
-- Private key file is 0o600, parent dir is 0o700 (T-339-04b-02).
-- Re-running keygen without ``--force`` REFUSES to overwrite (T-339-04b-01).
+- Private key file is 0o600, parent dir is 0o700.
+- Re-running keygen without ``--force`` REFUSES to overwrite.
 - ``--force`` actually rotates the bytes.
-- Private key bytes never appear in stdout (T-339-04b-03).
+- Private key bytes never appear in stdout.
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ from dryade_plugins_sdk.cli.cli import app
 
 
 def test_permissions(runner, author_key_dir: Path) -> None:
-    """D-08: priv key must be 0o600, dir 0o700."""
+    """priv key must be 0o600, dir 0o700."""
     result = runner.invoke(app, ["plugin", "keygen"])
     assert result.exit_code == 0, result.stdout
     priv = author_key_dir / "dev-key.priv"
@@ -58,7 +58,7 @@ def test_force_rotate(runner, author_key_dir: Path) -> None:
 
 
 def test_keygen_separate_from_dryade_dir(runner, author_key_dir: Path) -> None:
-    """D-08: ~/.dryade-author/ must NOT be the same as ~/.dryade/."""
+    """~/.dryade-author/ must NOT be the same as ~/.dryade/."""
     runner.invoke(app, ["plugin", "keygen"])
     assert author_key_dir.name == ".dryade-author", (
         f"keygen wrote to wrong directory: {author_key_dir}"
@@ -74,15 +74,15 @@ def test_keygen_separate_from_dryade_dir(runner, author_key_dir: Path) -> None:
 
 
 def test_keygen_does_not_print_private_key(runner, author_key_dir: Path) -> None:
-    """T-339-04b-03 mitigation: private key bytes never appear in stdout."""
+    """Private key bytes never appear in stdout."""
     result = runner.invoke(app, ["plugin", "keygen"])
     assert result.exit_code == 0, result.stdout
     priv_bytes = (author_key_dir / "dev-key.priv").read_bytes()
     priv_hex = priv_bytes.hex()
     assert priv_hex not in result.stdout, (
-        "T-339-04b-03 VIOLATION: private key hex appeared in stdout"
+        "VIOLATION: private key hex appeared in stdout"
     )
     # Also assert the raw bytes (unlikely but explicit).
     assert priv_bytes.decode("latin-1") not in result.stdout, (
-        "T-339-04b-03 VIOLATION: private key raw bytes appeared in stdout"
+        "VIOLATION: private key raw bytes appeared in stdout"
     )

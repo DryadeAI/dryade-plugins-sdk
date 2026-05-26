@@ -1,6 +1,6 @@
 """dryade plugin validate — fail-closed local validation.
 
-Fails closed (Rule §3, §4): any error exits non-zero. The command exposes
+Fails closed: any error exits non-zero. The command exposes
 no validation-bypass option of any kind. The validation surface mirrors the loader's gate:
 v2 manifest schema, Plugin Protocol structural conformance, importable
 package layout.
@@ -38,22 +38,21 @@ def validate_plugin(
         typer.secho(f"Invalid JSON in dryade.json: {e}", fg=typer.colors.RED)
         raise typer.Exit(code=1)
 
-    # Explicit Rule §11 gate (defense in depth — ManifestV2 also rejects but the
+    # Explicit tier gate (defense in depth — ManifestV2 also rejects but the
     # typer-level error message is more actionable than a schema-validation
-    # stack trace). 'community' is not a valid required_tier; community users
-    # have no Plugin Manager and no plugin loading.
+    # stack trace). 'community' is not a valid required_tier.
     manifest_tier = manifest.get("required_tier")
     if manifest_tier == "community":
         typer.secho(
-            "Rule §11 violation: required_tier='community' is not allowed.\n"
-            "  Community users have no Plugin Manager and no plugin loading.\n"
+            "required_tier='community' is not allowed.\n"
+            "  'community' is not a valid plugin tier.\n"
             "  Valid tiers: starter, team, enterprise.\n"
             "  See: https://docs.dryade.ai/plugins/tiers",
             fg=typer.colors.RED,
         )
         raise typer.Exit(code=1)
 
-    # Manifest schema (v2; Rule §11 enforced via the SDK ManifestV2).
+    # Manifest schema (v2; tier validity enforced via the SDK ManifestV2).
     try:
         known = ManifestV2.__dataclass_fields__
         ManifestV2(**{k: v for k, v in manifest.items() if k in known})

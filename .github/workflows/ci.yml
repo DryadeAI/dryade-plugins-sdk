@@ -30,7 +30,10 @@ jobs:
       - name: Install
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[testing]" pytest pytest-cov jsonschema
+          # [cli] brings typer + jinja2 so the CLI tests run; fastapi + httpx
+          # are needed by the @route/build_router tests (FastAPI TestClient) and
+          # the with_tool example.
+          pip install -e ".[cli,testing]" pytest pytest-cov jsonschema fastapi httpx
       - name: Lint (ruff)
         run: |
           pip install ruff
@@ -43,7 +46,7 @@ jobs:
         run: pytest -v --cov=dryade_plugins_sdk --cov-report=xml -m "not e2e"
 
   defense_in_depth:
-    name: Defense-in-depth (D-05, Rule §9, schema)
+    name: Defense-in-depth (contract integrity)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,15 +58,15 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[testing]" pytest jsonschema
-      - name: D-05 — zero core.* imports
+      - name: Zero host-runtime imports
         run: pytest tests/test_zero_core_imports.py -v
-      - name: Rule §9 — hash conformance (SHA-256 + SHA3-256 byte-identical)
+      - name: Hash conformance (SHA-256 + SHA3-256)
         run: pytest tests/test_hash_conformance.py -v
-      - name: Rule §11 — manifest schema rejects community tier
+      - name: Manifest schema rejects community tier
         run: pytest tests/test_manifest_schema_sdk.py -v
 
   brand_leak:
-    name: Brand-leak guard (T-09-1)
+    name: Internal-reference leak guard
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -75,11 +78,11 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pytest
-      - name: Run brand-leak regression net
-        run: pytest tests/test_no_internal_leaks_in_marketing.py -v
+      - name: Run internal-reference leak guard
+        run: pytest tests/test_no_internal_leaks.py -v
 
   examples_build:
-    name: Examples build (T-09-3)
+    name: Examples build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -90,7 +93,9 @@ jobs:
       - name: Install
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[testing]" pytest jsonschema
+          # The with_tool example wires @route into FastAPI, so it needs the
+          # CLI extras + fastapi + httpx to build and pass its own test suite.
+          pip install -e ".[cli,testing]" pytest jsonschema fastapi httpx
       - name: Build + test every example plugin
         run: pytest tests/test_examples_build.py -v
 
@@ -107,12 +112,7 @@ jobs:
       - name: Install SDK + CLI from local source (hermetic — no PyPI dep)
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[testing]" pytest jsonschema
-          # The CLI lives in a separate repo. For SDK-repo CI we install the
-          # latest published `dryade-cli` from PyPI (after first release lands).
-          # Until then, fall back to the main branch of the CLI repo.
-          pip install dryade-cli || \
-            pip install "git+https://github.com/DryadeAI/dryade-cli.git@main"
+          pip install -e ".[cli,testing]" pytest jsonschema
       - name: Run E2E smoke
         run: pytest tests/test_smoke_e2e.py -v -m e2e
 
@@ -132,7 +132,7 @@ jobs:
       - name: Verify license metadata in wheel
         run: |
           unzip -p dist/*.whl '*/METADATA' | grep -E '^(License|License-Expression)'
-          unzip -p dist/*.whl '*/METADATA' | grep -q 'LicenseRef-DSUL'
+          unzip -p dist/*.whl '*/METADATA' | grep -qE 'License(-Expression)?:\s*MIT'
       - uses: actions/upload-artifact@v4
         with:
           name: dist

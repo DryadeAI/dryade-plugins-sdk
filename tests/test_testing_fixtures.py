@@ -1,4 +1,4 @@
-"""D-07: SDK testing fixtures must work without Dryade core installed.
+"""SDK testing fixtures must work without the host runtime installed.
 
 These tests exercise the in-memory fixtures so authors can pytest their plugins
 in a clean venv that has only ``dryade-plugins-sdk`` installed.
@@ -108,7 +108,7 @@ def test_mock_llm_records_and_replays() -> None:
 
 
 def test_testing_module_has_zero_core_imports() -> None:
-    """The testing subpackage itself never imports core (D-07 hermetic)."""
+    """The testing subpackage itself never imports core (hermetic)."""
     import ast
     from pathlib import Path
 
@@ -120,12 +120,12 @@ def test_testing_module_has_zero_core_imports() -> None:
         for node in ast.walk(tree):
             if isinstance(node, ast.ImportFrom) and node.module:
                 assert not (node.module == "core" or node.module.startswith("core.")), (
-                    f"D-07 violation in {py}: from {node.module}"
+                    f"host-import violation in {py}: from {node.module}"
                 )
             elif isinstance(node, ast.Import):
                 for alias in node.names:
                     assert not (alias.name == "core" or alias.name.startswith("core.")), (
-                        f"D-07 violation in {py}: import {alias.name}"
+                        f"host-import violation in {py}: import {alias.name}"
                     )
 
 

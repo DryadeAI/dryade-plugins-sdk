@@ -1,8 +1,8 @@
 """Shared pytest fixtures for the SDK test suite.
 
-Includes the ``monkeypatch_module`` module-scoped fixture used by 339-08's
-smoke E2E test (H7 fix — the fixture is defined here once and referenced by
-name in the smoke suite, instead of inlined as a private fixture).
+Includes the ``monkeypatch_module`` module-scoped fixture used by the smoke
+E2E test (the fixture is defined here once and referenced by name in the smoke
+suite, instead of inlined as a private fixture).
 """
 
 from __future__ import annotations
@@ -36,10 +36,10 @@ def sample_plugin(tmp_path: Path) -> Path:
 
 @pytest.fixture(scope="module")
 def monkeypatch_module(request: pytest.FixtureRequest) -> object:
-    """Module-scoped monkeypatch fixture (H7 fix).
+    """Module-scoped monkeypatch fixture.
 
-    Pytest's built-in ``monkeypatch`` is function-scoped. The 339-08 smoke E2E
-    test needs a module-scoped equivalent so e.g. ``HOME`` can be set once per
+    Pytest's built-in ``monkeypatch`` is function-scoped. The smoke E2E test
+    needs a module-scoped equivalent so e.g. ``HOME`` can be set once per
     module (otherwise every test in the module would regenerate author keys).
 
     This fixture exposes the ``_pytest.monkeypatch.MonkeyPatch`` internal API
@@ -48,7 +48,7 @@ def monkeypatch_module(request: pytest.FixtureRequest) -> object:
     module finishes.
 
     Referenced by:
-      - 339-08 dryade-plugins-sdk/tests/test_smoke_e2e.py::setup_author_key
+      - tests/test_smoke_e2e.py::setup_author_key
     """
     from _pytest.monkeypatch import MonkeyPatch
 

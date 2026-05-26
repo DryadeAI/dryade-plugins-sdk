@@ -17,6 +17,6 @@ class Config(Protocol):
 
     def patch(
         self,
-        plugin_name: str | dict | None = None,
+        plugin_name: str | dict[str, Any] | None = None,
         updates: dict[str, Any] | None = None,
     ) -> dict[str, Any]: ...

@@ -1,10 +1,10 @@
 """Agent Protocol and supporting Pydantic models.
 
-Lifted from core/core/adapters/protocol.py (the UniversalAgent ABC + models).
-ABC inverted to @runtime_checkable Protocol; core.* imports stripped.
+Mirrors the host's universal agent contract (the UniversalAgent ABC + models),
+inverted to a @runtime_checkable Protocol with zero host-runtime imports.
 
-D-05: zero core.* imports. The AgentExecutionError exception is defined in
-dryade_plugins_sdk.exceptions, not imported from core.exceptions.
+This module has zero host-runtime imports — it is a pure contract. The
+AgentExecutionError exception is defined in dryade_plugins_sdk.exceptions.
 """
 
 from __future__ import annotations

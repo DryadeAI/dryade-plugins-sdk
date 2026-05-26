@@ -71,8 +71,7 @@ dryade plugin package
 
 The repo's `tests/test_examples_build.py` builds every example on every
 PR — manifest validation, plugin import, file shape check, and a
-full pytest-subprocess run. T-09-3 mitigation: examples cannot silently
-break.
+full pytest-subprocess run, so examples cannot silently break.
 
 ## Submitting a new example
 

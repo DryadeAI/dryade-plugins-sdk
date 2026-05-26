@@ -113,7 +113,7 @@
     "signature_pq": {
       "type": "string",
       "pattern": "^[0-9a-fA-F]+$",
-      "description": "ML-DSA-65 hex signature (optional in v2.0, mandatory in v2.1)"
+      "description": "Post-quantum signature (reserved; optional in v2.0, mandatory in v2.1)"
     },
     "icon": {
       "type": "string",
@@ -173,29 +173,29 @@
           "additionalProperties": true
         }
       ],
-      "description": "LEGACY field (Phase 339-02 — review/decide). Pre-v2 manifests used this as a Python-package dependency list (array of strings) OR as a {component: version} map (e.g., {'core': '>=1.0.0'}); superseded by pyproject.toml. Kept in schema to avoid silent data drop during the v1→v2 cutover."
+      "description": "LEGACY field. Pre-v2 manifests used this as a Python-package dependency list (array of strings) OR as a {component: version} map (e.g., {'core': '>=1.0.0'}); superseded by pyproject.toml. Kept in schema to avoid silent data drop during the v1→v2 cutover."
     },
     "has_routes": {
       "type": "boolean",
-      "description": "LEGACY field (Phase 339-02 — review/decide). Pre-v2 manifests used this as a hint that the plugin mounts FastAPI routes; superseded by the api_paths array."
+      "description": "LEGACY field. Pre-v2 manifests used this as a hint that the plugin mounts FastAPI routes; superseded by the api_paths array."
     },
     "env_vars": {
       "type": "array",
       "items": { "type": "string" },
-      "description": "LEGACY field (Phase 339-02 — review/decide). Pre-v2 manifests used this to declare which env vars the plugin reads; superseded by settings_schema."
+      "description": "LEGACY field. Pre-v2 manifests used this to declare which env vars the plugin reads; superseded by settings_schema."
     },
     "plugin_type": {
       "type": "string",
-      "description": "LEGACY field (Phase 339-02 — review/decide). Use 'category' instead."
+      "description": "LEGACY field. Use 'category' instead."
     },
     "capabilities": {
       "type": "array",
       "items": { "type": "string" },
-      "description": "LEGACY field (Phase 339-02 — review/decide). Free-form capability hints used by 1 plugin pre-v2."
+      "description": "LEGACY field. Free-form capability hints used by 1 plugin pre-v2."
     },
     "plugin_settings": {
       "type": "object",
-      "description": "LEGACY field (Phase 339-02 — review/decide). Pre-v2 manifests used this for runtime settings; superseded by settings_schema."
+      "description": "LEGACY field. Pre-v2 manifests used this for runtime settings; superseded by settings_schema."
     }
   },
   "allOf": [
@@ -206,7 +206,7 @@
       },
       "then": {
         "required": ["ui_bundle_hash"],
-        "description": "F1.5: has_ui:true MUST carry ui_bundle_hash so core can verify the UI bundle against the signed allowlist. The 'ui' metadata block is optional — production plugins use either the nested ui object OR the top-level display_name/category fallback (resolved by workbench fallback chain)."
+        "description": "has_ui:true MUST carry ui_bundle_hash so the host can verify the UI bundle against the signed allowlist. The 'ui' metadata block is optional — production plugins use either the nested ui object OR the top-level display_name/category fallback (resolved by the workbench fallback chain)."
       }
     }
   ],

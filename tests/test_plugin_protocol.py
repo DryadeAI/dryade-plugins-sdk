@@ -1,8 +1,8 @@
-"""F3.1: Plugin Protocol must be @runtime_checkable so loader's isinstance check works.
+"""Plugin Protocol must be @runtime_checkable so the loader's isinstance check works.
 
-Core's plugin loader at ``plugins_ee.py:434`` calls ``isinstance(plugin, PluginProtocol)``
-to verify a discovered plugin module exports a conforming object. This only works
-when the Protocol is decorated with ``@runtime_checkable``.
+The host's plugin loader calls ``isinstance(plugin, PluginProtocol)`` to verify a
+discovered plugin module exports a conforming object. This only works when the
+Protocol is decorated with ``@runtime_checkable``.
 """
 
 from __future__ import annotations
@@ -21,8 +21,7 @@ def test_plugin_runtime_checkable() -> None:
     """Plugin must be decorated with ``@runtime_checkable``.
 
     Protocols carrying the decorator expose a private
-    ``_is_runtime_protocol`` attribute set to True. See RESEARCH.md Pitfall 3
-    and core/ee/plugins_ee.py:434.
+    ``_is_runtime_protocol`` attribute set to True.
     """
     assert getattr(Plugin, "_is_runtime_protocol", False), (
         "Plugin must be decorated with @runtime_checkable"

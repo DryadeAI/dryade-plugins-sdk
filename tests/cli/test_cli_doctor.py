@@ -1,13 +1,13 @@
-"""D-12 — doctor diagnostic tests.
+"""doctor diagnostic tests.
 
 Locks down:
-- Doctor surfaces stale ``plugin_hash_sha256`` (Rule §9 freshness).
-- Doctor surfaces v1 manifests (post-Phase 339-02 they are broken).
-- Doctor surfaces Rule §11 violations (``required_tier='community'``).
+- Doctor surfaces a stale ``plugin_hash_sha256`` (hash-freshness gate).
+- Doctor surfaces v1 manifests (they are no longer supported).
+- Doctor surfaces an invalid ``required_tier='community'``.
 - Doctor surfaces missing ``dryade.json`` / ``pyproject.toml``.
 
-The tests are the regression net behind T-339-04b-05 (doctor reports OK
-when hash is actually stale).
+The tests are the regression net guarding against doctor reporting OK
+when the hash is actually stale.
 """
 
 from __future__ import annotations
@@ -33,7 +33,7 @@ def test_doctor_on_scaffolded(runner, scaffolded_plugin: Path) -> None:
 
 
 def test_doctor_detects_stale_hash(runner, scaffolded_plugin: Path) -> None:
-    """T-339-04b-05 regression net — doctor MUST flag a stale plugin_hash_sha256."""
+    """Regression net — doctor MUST flag a stale plugin_hash_sha256."""
     manifest_path = scaffolded_plugin / "dryade.json"
     manifest = json.loads(manifest_path.read_text())
     manifest["plugin_hash_sha256"] = "0" * 64  # not the real hash
@@ -47,7 +47,7 @@ def test_doctor_detects_stale_hash(runner, scaffolded_plugin: Path) -> None:
 
 
 def test_doctor_detects_v1_manifest(runner, scaffolded_plugin: Path) -> None:
-    """Doctor flags v1 manifest (broken post-Phase 339-02)."""
+    """Doctor flags v1 manifest (no longer supported)."""
     manifest_path = scaffolded_plugin / "dryade.json"
     manifest = json.loads(manifest_path.read_text())
     manifest["manifest_version"] = "1.0"
@@ -60,7 +60,7 @@ def test_doctor_detects_v1_manifest(runner, scaffolded_plugin: Path) -> None:
 
 
 def test_doctor_detects_community_tier(runner, scaffolded_plugin: Path) -> None:
-    """Rule §11 violation — doctor flags required_tier='community' loudly."""
+    """Invalid tier — doctor flags required_tier='community' loudly."""
     manifest_path = scaffolded_plugin / "dryade.json"
     manifest = json.loads(manifest_path.read_text())
     manifest["required_tier"] = "community"
@@ -68,13 +68,13 @@ def test_doctor_detects_community_tier(runner, scaffolded_plugin: Path) -> None:
     result = runner.invoke(app, ["plugin", "doctor", str(scaffolded_plugin)])
     assert result.exit_code != 0, "community tier MUST surface as non-zero exit"
     out_lower = result.stdout.lower()
-    assert "community" in out_lower or "rule §11" in out_lower or "rule 11" in out_lower, (
-        f"community-tier report must mention 'community' or 'Rule §11'; got: {result.stdout!r}"
+    assert "community" in out_lower or "invalid tier" in out_lower or "tier" in out_lower, (
+        f"community-tier report must mention 'community' or the tier rule; got: {result.stdout!r}"
     )
 
 
 def test_doctor_detects_missing_pyproject(runner, scaffolded_plugin: Path) -> None:
-    """Doctor flags missing pyproject.toml (lint_plugins.py would fail on it)."""
+    """Doctor flags missing pyproject.toml (the host linter would fail on it)."""
     (scaffolded_plugin / "pyproject.toml").unlink()
     result = runner.invoke(app, ["plugin", "doctor", str(scaffolded_plugin)])
     assert result.exit_code != 0, "missing pyproject.toml MUST surface"

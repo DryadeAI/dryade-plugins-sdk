@@ -25,4 +25,4 @@ class AgentExecutionError(DryadePluginError):
 
 
 class HashMismatchError(DryadePluginError):
-    """SHA-256 or SHA3-256 hash drifted — Rule §9 violation."""
+    """SHA-256 or SHA3-256 hash drifted from the recorded digest."""

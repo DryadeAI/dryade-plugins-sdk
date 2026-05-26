@@ -27,23 +27,23 @@ Thanks for your interest in contributing.
 Your PR must pass:
 
 - `pytest` (full suite — Python 3.11, 3.12, 3.13)
-- `pytest tests/test_zero_core_imports.py` (D-05 enforcement — SDK NEVER imports from the host runtime)
-- `pytest tests/test_hash_conformance.py` (Rule §9 — hash algorithm byte-identical to Dryade core)
+- `pytest tests/test_zero_core_imports.py` (enforcement — the SDK NEVER imports from the host runtime)
+- `pytest tests/test_hash_conformance.py` (hash algorithm byte-identical to the host runtime)
 - `pytest tests/test_smoke_e2e.py` (scaffold → validate → package smoke)
 - `ruff check src/ tests/` (lint)
 - `mypy src/dryade_plugins_sdk` (typecheck)
 
 ## Non-negotiable invariants
 
-1. **D-05: zero host-runtime imports.** This SDK is a pure CONTRACT package. It defines
-   Protocols that the Dryade runtime implements, not the other way around. the host-imports gate test
+1. **Zero host-runtime imports.** This SDK is a pure CONTRACT package. It defines
+   Protocols that the Dryade runtime implements, not the other way around. The host-imports gate test
    AST-scans every file in `src/` and fails the build on any `from core.` or `import core`.
 
-2. **Rule §9: Hash algorithm parity.** `compute_plugin_hash_pair` must produce
+2. **Hash algorithm parity.** `compute_plugin_hash_pair` must produce
    byte-identical SHA-256 and SHA3-256 digests as the Dryade runtime's hash function. The `test_hash_conformance.py` test
    independently reimplements the algorithm and asserts equality.
 
-3. **Rule §11: Tier names.** Valid `required_tier` values: `starter`, `team`,
+3. **Tier names.** Valid `required_tier` values: `starter`, `team`,
    `enterprise`. **Never** add `community`, `dev`, `sovereign`, or any other.
    The schema enum is locked.
 
@@ -51,9 +51,9 @@ Your PR must pass:
    `DRYADE_DISABLE_*` env-vars in the SDK or CLI.
 
 5. **Public docs only.** The SDK is the public face of Dryade plugin authoring.
-   Documentation must not leak internal mechanics: TOFU pubkey paths, allowlist
+   Documentation must not leak internal mechanics: pinned-pubkey paths, allowlist
    format, marketplace internals, port numbers. See
-   `tests/test_security_disclosure.py` for the forbidden-pattern list.
+   `tests/test_no_internal_leaks.py` for the forbidden-pattern list.
 
 ## Releasing
 

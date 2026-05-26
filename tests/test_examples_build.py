@@ -9,7 +9,7 @@ Walks ``examples/*/`` and for each directory containing a ``dryade.json``:
    a subprocess so each example's local pytest config (its own
    ``pyproject.toml``) takes effect.
 
-This is the regression net for T-09-3 (silent breakage of examples).
+This is the regression net against silent breakage of examples.
 """
 
 from __future__ import annotations
@@ -34,7 +34,7 @@ EXAMPLE_DIRS = sorted(
 
 
 def test_examples_dir_has_expected_count() -> None:
-    """We expect exactly 5 reference examples (339-09 §truths)."""
+    """We expect exactly 5 reference examples."""
     names = [p.name for p in EXAMPLE_DIRS]
     expected = {"hello_world", "with_tool", "with_llm", "with_ui", "multi_agent"}
     assert set(names) == expected, f"Examples drift: have {set(names)}, expected {expected}"
@@ -47,9 +47,9 @@ def test_example_manifest_validates(example_dir: Path) -> None:
     known = ManifestV2.__dataclass_fields__
     manifest = ManifestV2(**{k: v for k, v in data.items() if k in known})
     assert manifest.manifest_version == "2.0"
-    # F4.2 — no entry_point in v2
+    # no entry_point in v2
     assert "entry_point" not in data
-    # Rule §11 — only canonical tier names
+    # only canonical tier names
     assert manifest.required_tier in {"starter", "team", "enterprise"}
 
 
@@ -106,7 +106,7 @@ def test_example_has_required_files(example_dir: Path) -> None:
 
 @pytest.mark.parametrize("example_dir", EXAMPLE_DIRS, ids=lambda p: p.name)
 def test_example_test_file_has_assertions(example_dir: Path) -> None:
-    """F4.3 — each example's tests must carry ≥3 real assertions."""
+    """Each example's tests must carry ≥3 real assertions."""
     test_file = example_dir / "tests" / "test_plugin.py"
     text = test_file.read_text()
     assert text.count("def test_") >= 3, (

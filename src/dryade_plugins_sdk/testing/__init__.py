@@ -1,6 +1,6 @@
 """Author-facing test fixtures.
 
-D-07: these work in any clean Python venv — no Dryade core install required.
+These work in any clean Python venv — no host-runtime install required.
 Plugin authors can pytest their work using only `pip install dryade-plugins-sdk`.
 
 This subpackage has ZERO core.* imports — verified by tests/test_zero_core_imports.py.

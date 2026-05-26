@@ -1,12 +1,12 @@
-"""``dryade plugin keygen`` — author dev key generation (D-08).
+"""``dryade plugin keygen`` — author dev key generation.
 
 Generates ``~/.dryade-author/dev-key.{priv,pub}`` with strict perms
 (0o600 / 0o700). NEVER prints the private key — only the public hex,
 so the author can register the pubkey with the marketplace.
 
-Refuses to overwrite an existing key without ``--force`` (T-339-04b-01
-mitigation: opt-in rotation only, with a clear remediation message
-explaining that prior plugin signatures become invalid).
+Refuses to overwrite an existing key without ``--force`` (opt-in rotation
+only, with a clear remediation message explaining that prior plugin
+signatures become invalid).
 """
 
 from __future__ import annotations
@@ -34,9 +34,8 @@ def keygen(
     ``~/.dryade-author/dev-key.pub`` (hex string). The private key signs
     your ``.dryadepkg`` artifacts when you run ``dryade plugin package``.
     """
-    # T-339-04b-03 mitigation: we only consume the public hex from the
-    # return tuple. The private bytes are written to disk inside
-    # generate_author_keypair and never touched here.
+    # We only consume the public hex from the return tuple. The private bytes
+    # are written to disk inside generate_author_keypair and never touched here.
     try:
         _, pub_hex = generate_author_keypair(force=force)
     except FileExistsError as e:

@@ -1,6 +1,6 @@
 """In-memory MockKV — drop-in for the KV Protocol in tests.
 
-D-07: stdlib-only, no dependency on Dryade core.
+Stdlib-only, with no dependency on the host runtime.
 """
 
 from __future__ import annotations

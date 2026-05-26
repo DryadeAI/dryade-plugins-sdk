@@ -1,16 +1,14 @@
-"""Plugin packaging primitives — Rule §9 contract v4 dual hash + Ed25519 signing.
+"""Plugin packaging primitives — contract v4 dual hash + Ed25519 signing.
 
-CRITICAL: ``compute_plugin_hash_pair`` MUST be byte-identical to core's
-``_compute_plugin_hash_pair`` (Dryade/core/core/ee/plugin_security.ee.py:119).
-Drift breaks the allowlist hash gate — plugins built with the SDK would fail
-on-disk hash verification at core load time.
+CRITICAL: ``compute_plugin_hash_pair`` MUST be byte-identical to the host's
+plugin-hash algorithm. Drift breaks the load-time hash gate — plugins built
+with the SDK would fail on-disk hash verification when the host loads them.
 
 Tests: ``tests/test_hash_conformance.py`` independently re-computes the digest
 pair from canonical bytes and asserts equality. That test is the regression net
-required by Rule §9.
+for the dual-hash plugin contract (SHA-256 + SHA3-256).
 
-Algorithm v4 (must match scanner.rs::hash_plugin_files in dryade-plugin-manager
-and ``_compute_plugin_hash_pair`` in core's plugin_security.ee.py):
+Algorithm v4 (must be byte-identical to the host's plugin-hash algorithm):
 
 1. Collect all *.py files recursively, excluding ``__pycache__/`` dirs and
    ``*.pyc`` files. Return absolute paths.
@@ -26,7 +24,7 @@ and ``_compute_plugin_hash_pair`` in core's plugin_security.ee.py):
 7. Return ``(sha256_hex, sha3_256_hex)`` — both bare lowercase hex, no
    algorithm prefix.
 
-This module has ZERO core.* imports (D-05).
+This module has zero host-runtime imports — it is a pure contract.
 """
 
 from __future__ import annotations
@@ -40,8 +38,8 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
 from dryade_plugins_sdk.exceptions import HashMismatchError
 
-# Plugin contract v4 — SHA-256 + SHA3-256 dual hash (Rule §9).
-# Bump this constant ONLY when core's _compute_plugin_hash_pair bumps in lockstep.
+# Plugin contract v4 — SHA-256 + SHA3-256 dual hash.
+# Bump this constant ONLY when the host's plugin-hash algorithm bumps in lockstep.
 CONTRACT_VERSION = 4
 
 
@@ -86,7 +84,7 @@ def compute_plugin_hash_pair(plugin_dir: Path) -> tuple[str, str]:
 
     for abs_path in py_files:
         rel_path = abs_path.relative_to(plugin_dir)
-        # Forward slashes for cross-platform consistency (matches Rust scanner.rs).
+        # Forward slashes for cross-platform consistency (canonical path form).
         rel_str = str(rel_path).replace("\\", "/")
         content = abs_path.read_bytes()
 
@@ -113,8 +111,8 @@ def compute_plugin_hash_pair(plugin_dir: Path) -> tuple[str, str]:
 def get_canonical_bytes(manifest_dict: dict[str, Any]) -> bytes:
     """Return canonical JSON bytes for signing.
 
-    Rules (must match ``scripts/sign_plugins.py::_get_canonical_bytes`` semantics
-    plus the workbench JS verifier's ``ensure_ascii=False`` parity rule):
+    Rules (must match the host's canonical-bytes semantics plus the workbench
+    JS verifier's ``ensure_ascii=False`` parity rule):
       - ``sort_keys=True``
       - ``separators=(",", ":")``
       - ``ensure_ascii=False`` (parity with workbench JS verifier — Unicode is
@@ -141,7 +139,7 @@ def sign_manifest(manifest_dict: dict[str, Any], private_key: Ed25519PrivateKey)
 def load_private_key(key_path: Path) -> Ed25519PrivateKey:
     """Load a raw 32-byte Ed25519 private key.
 
-    Matches the format expected by ``scripts/sign_plugins.py`` — a raw 32-byte
+    Matches the format expected by the host's signer — a raw 32-byte
     seed written to disk by ``cryptography.hazmat.primitives.asymmetric.ed25519
     .Ed25519PrivateKey.generate().private_bytes_raw()``.
 
@@ -175,7 +173,7 @@ def verify_plugin_hash(plugin_dir: Path, expected_sha256: str, expected_sha3_256
         expected_sha3_256: Expected SHA3-256 hex digest.
 
     Raises:
-        HashMismatchError: if either digest fails to match (Rule §9 freshness).
+        HashMismatchError: if either digest fails to match (hash freshness).
     """
     actual_sha256, actual_sha3_256 = compute_plugin_hash_pair(plugin_dir)
     if actual_sha256 != expected_sha256:

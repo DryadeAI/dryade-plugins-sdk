@@ -1,10 +1,10 @@
 """Leash Protocol — sandbox / isolation policy a plugin can request.
 
 LIVE isolation levels: NONE, PROCESS, LANGUAGE.
-STUB (fail-closed): CONTAINER, GVISOR (per F3.10 — host refuses at load time
-if the plugin requests an isolation level the host cannot honor).
+STUB (fail-closed): CONTAINER, GVISOR — the host refuses at load time if the
+plugin requests an isolation level the host cannot honor.
 
-This module has ZERO core.* imports (D-05).
+This module has zero host-runtime imports — it is a pure contract.
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ class IsolationLevel(str, Enum):
     LIVE today:
         NONE      — no isolation (host trust level)
         PROCESS   — subprocess + resource limits (cpu/mem/network)
-        LANGUAGE  — bwrap / firejail user-namespace sandbox (Phase 338)
+        LANGUAGE  — bwrap / firejail user-namespace sandbox
 
     STUB (fail-closed) — declared so plugins can request them in manifests, but
     the host refuses to load the plugin until the corresponding sandbox lands:
@@ -29,7 +29,7 @@ class IsolationLevel(str, Enum):
 
     NONE = "none"
     PROCESS = "process"
-    LANGUAGE = "language"  # shipped Phase 338
+    LANGUAGE = "language"  # user-namespace sandbox
     CONTAINER = "container"  # STUB — fail-closed if requested
     GVISOR = "gvisor"  # STUB — fail-closed if requested
 
