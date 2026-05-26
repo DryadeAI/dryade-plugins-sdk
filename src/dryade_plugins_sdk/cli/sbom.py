@@ -115,6 +115,15 @@ def build_sbom(plugin_dir: Path, name: str, version: str) -> dict[str, Any]:
                         props.append(
                             {"name": "dryade:sbom-source", "value": "cyclonedx-py"}
                         )
+                    # Identify the plugin as the SBOM's top-level component so the
+                    # document describes the plugin (not the build environment),
+                    # consistent with the minimal-shim path.
+                    meta["component"] = {
+                        "type": "library",
+                        "name": name,
+                        "version": version,
+                        "bom-ref": f"{name}@{version}",
+                    }
                     return doc
         finally:
             try:
