@@ -9,7 +9,6 @@
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 
 import pytest
@@ -161,10 +160,19 @@ def test_scaffold_each_valid_tier(runner, tmp_path, author_key_dir):
 def test_scaffold_no_internal_repo_references(runner, tmp_path, author_key_dir):
     """Scaffold output must contain no internal-repo references.
 
-    Sources the forbidden token patterns from the central leak-guard so the
-    literal tokens never appear in this file's own source.
+    Tokens are assembled from fragments so the literal forbidden strings never
+    appear in this file's own source (which the leak guard also scans).
     """
-    from tests.test_no_internal_leaks import FORBIDDEN
+    forbidden = [
+        "dryade-" + "internal",
+        "/home/" + "dryade",
+        "192.168" + ".",
+        "core" + "/ee",
+        "plugins" + "_ee",
+        "dryade-pm" + " push",
+        "core.api" + ".main",
+        "gun" + "icorn",
+    ]
 
     result = runner.invoke(
         app,
@@ -175,9 +183,9 @@ def test_scaffold_no_internal_repo_references(runner, tmp_path, author_key_dir):
     for f in plugin_dir.rglob("*"):
         if f.is_file():
             text = f.read_text(errors="ignore")
-            for name, pattern in FORBIDDEN.items():
-                assert not re.search(pattern, text), (
-                    f"forbidden token ({name}) leaked into scaffold file {f}"
+            for tok in forbidden:
+                assert tok not in text, (
+                    f"forbidden token {tok!r} leaked into scaffold file {f}"
                 )
 
 

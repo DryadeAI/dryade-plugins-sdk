@@ -130,11 +130,18 @@ def new_plugin(
                 "First-run: generating author keypair at ~/.dryade-author/...",
                 fg=typer.colors.CYAN,
             )
-            generate_author_keypair(force=False)
-            typer.secho(
-                "  Done. NEVER commit ~/.dryade-author/dev-key.priv.",
-                fg=typer.colors.YELLOW,
-            )
+            try:
+                generate_author_keypair(force=False)
+            except FileExistsError:
+                # The module-level path constant is resolved at import time and
+                # can be stale if HOME moved; the key already exists, so there
+                # is nothing to generate.
+                pass
+            else:
+                typer.secho(
+                    "  Done. NEVER commit ~/.dryade-author/dev-key.priv.",
+                    fg=typer.colors.YELLOW,
+                )
     except ImportError:
         # When keys.py is unavailable, defer to explicit `dryade plugin keygen`.
         pass
