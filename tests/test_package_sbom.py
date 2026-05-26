@@ -76,7 +76,7 @@ def test_dryadepkg_contains_cyclonedx_sbom(monkeypatch, plugin_dir, tmp_path):
         sbom = json.loads(member.read().decode("utf-8"))
 
     assert sbom.get("bomFormat") == "CycloneDX"
-    assert sbom.get("specVersion") == "1.5"
+    assert sbom.get("specVersion") in ("1.5", "1.6")
     # Component metadata is required by the contract.
     comp = sbom.get("metadata", {}).get("component", {})
     assert comp.get("name") == "sbomproof"

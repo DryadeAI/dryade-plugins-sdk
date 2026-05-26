@@ -13,6 +13,27 @@ labeled PRs.
 
 _release-drafter manages this section on every PR merge — do not edit by hand._
 
+## [1.1.3] — 2026-05-26
+
+### Changed
+
+- Documentation, docstrings, the manifest JSON schema, and CI job names now
+  describe only the public author contract. Internal project identifiers and
+  references to non-public modules have been removed.
+
+### Added
+
+- `tests/test_no_internal_leaks.py` scans every author-visible file (source,
+  schema, CI, docs, templates) and runs as a required CI job.
+
+### Fixed
+
+- CI now installs the `[cli]` extras plus `fastapi`/`httpx` in the test and
+  example jobs so the CLI, route, and example suites run; the build job
+  verifies MIT license metadata; the smoke test uses the in-repo CLI.
+- Resolved typing (`mypy --strict`) and stale-assertion issues across the
+  test suite.
+
 ## [1.1.2] — 2026-05-20
 
 ### Added

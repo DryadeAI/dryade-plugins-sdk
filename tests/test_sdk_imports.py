@@ -42,9 +42,13 @@ def test_all_top_level_imports() -> None:
 
 def test_version_attributes() -> None:
     """``__version__`` and ``__contract_version__`` are set at the published values."""
+    from importlib.metadata import version
+
     import dryade_plugins_sdk
 
-    assert dryade_plugins_sdk.__version__ == "1.1.2"
+    # Track the installed distribution version rather than a hardcoded literal
+    # so the assertion survives every release bump.
+    assert dryade_plugins_sdk.__version__ == version("dryade-plugins-sdk")
     assert dryade_plugins_sdk.__contract_version__ == 4
 
 
