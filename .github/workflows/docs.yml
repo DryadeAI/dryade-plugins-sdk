@@ -34,7 +34,7 @@ jobs:
             "mkdocs-git-revision-date-localized-plugin>=1.2"
       - name: Build site
         run: mkdocs build --strict
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with: { path: site }
 
   deploy:
