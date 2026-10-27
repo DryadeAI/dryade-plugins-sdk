@@ -1,3 +1,5 @@
+# R-156 (2026-10-27): every product dependency stays current. One grouped weekly PR per
+# ecosystem; security fixes come as their own grouped PR, treated as P0 reds.
 version: 2
 updates:
   - package-ecosystem: pip
@@ -6,30 +8,35 @@ updates:
       interval: weekly
       day: monday
       time: "06:00"
-      timezone: "Europe/Paris"
+      timezone: Europe/Paris
     open-pull-requests-limit: 5
-    labels:
-      - dependencies
-      - python
+    labels: [dependencies]
     commit-message:
-      prefix: "deps"
+      prefix: deps
       include: scope
-    reviewers:
-      - DryadeAI/core-maintainers
-
+    groups:
+      pip:
+        applies-to: version-updates
+        patterns: ["*"]
+      pip-security:
+        applies-to: security-updates
+        patterns: ["*"]
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: weekly
       day: monday
       time: "06:00"
-      timezone: "Europe/Paris"
+      timezone: Europe/Paris
     open-pull-requests-limit: 5
-    labels:
-      - dependencies
-      - github-actions
+    labels: [dependencies]
     commit-message:
-      prefix: "deps(actions)"
-    reviewers:
-      - DryadeAI/core-maintainers
-      - DryadeAI/security
+      prefix: deps
+      include: scope
+    groups:
+      github-actions:
+        applies-to: version-updates
+        patterns: ["*"]
+      github-actions-security:
+        applies-to: security-updates
+        patterns: ["*"]
