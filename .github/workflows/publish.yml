@@ -24,10 +24,10 @@ jobs:
     name: Build distribution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0  # full history for hatchling versioning
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Verify tag matches pyproject version
@@ -51,7 +51,7 @@ jobs:
         run: |
           unzip -p dist/*.whl '*/METADATA' | grep -E '^(License|License-Expression)'
           unzip -p dist/*.whl '*/METADATA' | grep -qE 'License(-Expression)?:\s*MIT'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
@@ -70,7 +70,7 @@ jobs:
     permissions:
       id-token: write  # MANDATORY for OIDC
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist/
@@ -92,7 +92,7 @@ jobs:
       id-token: write  # MANDATORY for OIDC
       # No `contents: write` — we don't push back to the repo from this job
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist/
