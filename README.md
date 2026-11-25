@@ -10,6 +10,8 @@
   <strong>Pure-Protocol Python SDK for authoring Dryade plugins.</strong><br>
   Zero host-runtime imports. Hash-conformant. MIT-licensed.
 </p>
+
+<p align="center">
   <a href="https://github.com/DryadeAI/dryade-plugins-sdk/actions/workflows/ci.yml"><img src="https://github.com/DryadeAI/dryade-plugins-sdk/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://pypi.org/project/dryade-plugins-sdk/"><img src="https://img.shields.io/pypi/v/dryade-plugins-sdk.svg" alt="PyPI"></a>
   <a href="https://pypi.org/project/dryade-plugins-sdk/"><img src="https://img.shields.io/pypi/pyversions/dryade-plugins-sdk.svg" alt="Python versions"></a>
@@ -19,9 +21,73 @@
   <a href="#contributors"><img src="https://img.shields.io/badge/all_contributors-1-orange.svg" alt="All Contributors"></a>
 </p>
 
-<p align="center">
-  
-</p>
+## What is Dryade
+
+[Dryade](https://dryade.ai) is a proprietary, self-hosted AI agent orchestration platform built in France (EU). It runs agents from CrewAI, LangGraph and ADK, plus agents defined in markdown, on your own servers, with local models or explicitly configured external providers. It adds tool routing, human approval steps, signed plugins and a hash-chained audit trail. Dryade is in public beta. This SDK is the MIT-licensed part: the contract and tooling for writing plugins for it. The platform itself is not open source.
+
+## What the SDK does
+
+- Defines the plugin contract as Python `Protocol` classes (`Plugin`, `Tool`, `Route`, agents, config, key-value store, channels) with no import of the Dryade host.
+- Provides decorators (`@tool`, `@route`), a `ManifestV2` model for `dryade.json`, and `build_router()` to turn a plugin's routes into a FastAPI router.
+- Ships a test host (`dryade_plugins_sdk.testing.FakeHost`) so you can load and exercise a plugin without installing Dryade.
+- Ships the `dryade` CLI (`[cli]` extra) to scaffold, validate and package a plugin into a signed `.dryadepkg`.
+
+## Install
+
+```bash
+pip install dryade-plugins-sdk            # library and test host
+uv tool install 'dryade-plugins-sdk[cli]' # plus the dryade CLI
+```
+
+Python 3.11 or newer.
+
+## A minimal plugin
+
+A plugin is a plain class with five attributes and methods. This one gives the host LLM one tool. It is the `with_tool` example trimmed to the tool, and it loads in the test host:
+
+```python
+from dryade_plugins_sdk import tool
+
+
+@tool(name="get_current_time", description="Return the current UTC time as ISO 8601.")
+def get_current_time() -> str:
+    from datetime import datetime, timezone
+
+    return datetime.now(timezone.utc).isoformat()
+
+
+class ClockPlugin:
+    name = "clock"
+    version = "0.1.0"
+    description = "Exposes one tool to the host LLM."
+    core_version_constraint = ">=1.0.0,<2.0.0"
+
+    def register(self, registry):
+        registry.register(get_current_time)
+
+    def startup(self, **kwargs): ...
+    def shutdown(self): ...
+    def get_health_checks(self): return {}
+    def get_manageable_components(self): return []
+
+
+plugin = ClockPlugin()
+```
+
+Check it without Dryade:
+
+```python
+from dryade_plugins_sdk import Plugin
+from dryade_plugins_sdk.testing import FakeHost
+
+assert isinstance(plugin, Plugin)
+host = FakeHost()
+host.load(plugin)
+print(list(host.registry.tools))  # ['get_current_time']
+host.shutdown()
+```
+
+More complete plugins, each with a manifest and tests, are in [`examples/`](examples/).
 
 ## Why dryade-plugins-sdk
 
