@@ -22,7 +22,16 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 # Directories that never ship to authors.
-_SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", ".pytest_cache", "dist", "build", ".mypy_cache"}
+_SKIP_DIRS = {
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    ".pytest_cache",
+    "dist",
+    "build",
+    ".mypy_cache",
+}
 # This guard file legitimately *names* the forbidden tokens in its own pattern
 # table; exclude it (and nothing else) from the scan.
 _SELF = Path(__file__).name
@@ -37,7 +46,10 @@ def _scanned_files() -> list[Path]:
             continue
         if path.name == _SELF:
             continue
-        if path.suffix in {".py", ".json", ".yml", ".yaml", ".md", ".j2"} or path.name == "llms.txt":
+        if (
+            path.suffix in {".py", ".json", ".yml", ".yaml", ".md", ".j2"}
+            or path.name == "llms.txt"
+        ):
             out.append(path)
     return sorted(out)
 

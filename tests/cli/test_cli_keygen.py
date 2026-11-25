@@ -79,9 +79,7 @@ def test_keygen_does_not_print_private_key(runner, author_key_dir: Path) -> None
     assert result.exit_code == 0, result.stdout
     priv_bytes = (author_key_dir / "dev-key.priv").read_bytes()
     priv_hex = priv_bytes.hex()
-    assert priv_hex not in result.stdout, (
-        "VIOLATION: private key hex appeared in stdout"
-    )
+    assert priv_hex not in result.stdout, "VIOLATION: private key hex appeared in stdout"
     # Also assert the raw bytes (unlikely but explicit).
     assert priv_bytes.decode("latin-1") not in result.stdout, (
         "VIOLATION: private key raw bytes appeared in stdout"

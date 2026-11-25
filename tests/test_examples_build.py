@@ -126,6 +126,7 @@ def test_example_pytest_suite_passes(example_dir: Path) -> None:
         [sys.executable, "-m", "pytest", "-q"],
         cwd=example_dir,
         capture_output=True,
+        check=False,
         text=True,
         timeout=120,
     )

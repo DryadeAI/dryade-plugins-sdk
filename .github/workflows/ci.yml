@@ -36,7 +36,7 @@ jobs:
           pip install -e ".[cli,testing]" pytest pytest-cov jsonschema fastapi httpx
       - name: Lint (ruff)
         run: |
-          pip install ruff
+          pip install ruff==0.17.6
           ruff check src/ tests/
       - name: Typecheck (mypy)
         run: |
