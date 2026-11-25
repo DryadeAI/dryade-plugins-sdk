@@ -4,11 +4,11 @@
 
 ## Documentation
 
-- [Getting Started](https://sdk.dryade.ai/getting-started/) — 5-step tutorial: install -> scaffold -> write -> test -> package
-- [Concepts](https://sdk.dryade.ai/concepts/) — Protocols, Manifest v2, Tiers, Signing, Hashing, Sandbox, Contract version
-- [API Reference](https://sdk.dryade.ai/api-reference/) — full Protocol surface (Plugin, Agent, Tool, Route, Config, KV, Leash, Auth, DB, Channels)
-- [CLI Reference](https://sdk.dryade.ai/cli-reference/) — dryade-cli commands (new, validate, package, keygen, doctor)
-- [Cookbook](https://sdk.dryade.ai/cookbook/) — HITL prompt, MCP tool, multi-agent collaboration, persistent KV, UI
+- [Getting Started](https://dryade.ai/docs/sdk/getting-started/) — 5-step tutorial: install -> scaffold -> write -> test -> package
+- [Concepts](https://dryade.ai/docs/sdk/concepts/) — Protocols, Manifest v2, Tiers, Signing, Hashing, Sandbox, Contract version
+- [API Reference](https://dryade.ai/docs/sdk/api-reference/) — full Protocol surface (Plugin, Agent, Tool, Route, Config, KV, Leash, Auth, DB, Channels)
+- [CLI Reference](https://dryade.ai/docs/sdk/cli-reference/) — dryade-cli commands (new, validate, package, keygen, doctor)
+- [Cookbook](https://dryade.ai/docs/sdk/cookbook/) — HITL prompt, MCP tool, multi-agent collaboration, persistent KV, UI
 
 ## Examples
 
@@ -20,13 +20,13 @@
 
 ## Optional
 
-- [Security model for authors](https://sdk.dryade.ai/security/) — what plugin authors must know about hashing, signing, tier slots
-- [Migration from manifest v1](https://sdk.dryade.ai/migration/) — for internal contributors
+- [Security model for authors](https://dryade.ai/docs/sdk/security/) — what plugin authors must know about hashing, signing, tier slots
+- [Migration from manifest v1](https://dryade.ai/docs/sdk/migration/) — for internal contributors
 - [CHANGELOG](https://github.com/DryadeAI/dryade-plugins-sdk/blob/main/CHANGELOG.md) — versioned release notes
 
 ## Notes
 
-- License: MIT (source-available, see LICENSE)
+- License: MIT (see LICENSE)
 - Python: 3.11+
 - Contract version: 4 (SHA-256 + SHA3-256 dual hash)
 - Marketplace: https://dryade.ai/marketplace
