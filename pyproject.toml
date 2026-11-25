@@ -72,8 +72,8 @@ docs = [
 dryade = "dryade_plugins_sdk.cli.cli:main"
 
 [project.urls]
-Homepage = "https://sdk.dryade.ai/"
-Documentation = "https://sdk.dryade.ai/"
+Homepage = "https://dryade.ai/docs/sdk/"
+Documentation = "https://dryade.ai/docs/sdk/"
 Repository = "https://github.com/DryadeAI/dryade-plugins-sdk"
 Issues = "https://github.com/DryadeAI/dryade-plugins-sdk/issues"
 Discussions = "https://github.com/DryadeAI/dryade-plugins-sdk/discussions"

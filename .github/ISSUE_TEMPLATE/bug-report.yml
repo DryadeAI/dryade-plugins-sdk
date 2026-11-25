@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for filing. Before submitting, please check existing issues and the [FAQ](https://sdk.dryade.ai/faq/).
+        Thanks for filing. Before submitting, please check existing issues and the [FAQ](https://dryade.ai/docs/sdk/faq/).
   - type: input
     id: sdk-version
     attributes:

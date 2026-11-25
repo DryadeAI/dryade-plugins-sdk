@@ -1,5 +1,5 @@
 site_name: dryade-plugins-sdk
-site_url: https://sdk.dryade.ai
+site_url: https://dryade.ai/docs/sdk
 site_description: Build sovereign AI agents — author Dryade plugins in Python with type-safe protocols.
 site_author: Dryade
 repo_url: https://github.com/DryadeAI/dryade-plugins-sdk
