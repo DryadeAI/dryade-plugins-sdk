@@ -9,7 +9,8 @@ This module has zero host-runtime imports — it is a pure contract.
 
 from __future__ import annotations
 
-from typing import Any, Callable, Protocol, runtime_checkable
+from collections.abc import Callable
+from typing import Any, Protocol, runtime_checkable
 
 
 @runtime_checkable
@@ -32,4 +33,4 @@ RequireAdmin = Callable[[Any], CurrentUser]  # 403 if not admin
 GetDb = Callable[[Any], Any]  # host injects DB session
 
 
-__all__ = ["CurrentUser", "GetCurrentUser", "RequireAdmin", "GetDb"]
+__all__ = ["CurrentUser", "GetCurrentUser", "GetDb", "RequireAdmin"]

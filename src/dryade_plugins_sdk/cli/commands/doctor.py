@@ -27,6 +27,7 @@ from pathlib import Path
 from typing import Annotated, Any
 
 import typer
+
 from dryade_plugins_sdk.packaging import compute_plugin_hash_pair
 
 
@@ -87,8 +88,7 @@ def doctor(
         required_tier = manifest.get("required_tier")
         if required_tier == "community":
             issues.append(
-                "required_tier='community' is not allowed. "
-                "Valid tiers: starter, team, enterprise."
+                "required_tier='community' is not allowed. Valid tiers: starter, team, enterprise."
             )
 
     # 5. pyproject.toml presence (required for packaging).

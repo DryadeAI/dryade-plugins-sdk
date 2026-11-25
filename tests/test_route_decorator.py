@@ -13,7 +13,7 @@ def test_route_decorator_stamps_canonical_meta():
     def status() -> dict[str, bool]:
         return {"ok": True}
 
-    meta = getattr(status, "_dryade_route_meta")
+    meta = status._dryade_route_meta
     assert meta == {
         "path": "/status",
         "method": "GET",
@@ -95,7 +95,7 @@ def test_collect_routes_handles_inherited_legacy_spec_attribute():
 
 def test_build_router_wires_decorated_methods_into_fastapi():
     fastapi = pytest.importorskip("fastapi")
-    TestClient = pytest.importorskip("fastapi.testclient").TestClient  # noqa: N806
+    TestClient = pytest.importorskip("fastapi.testclient").TestClient
 
     class Plugin:
         @route(path="/ping", method="GET")

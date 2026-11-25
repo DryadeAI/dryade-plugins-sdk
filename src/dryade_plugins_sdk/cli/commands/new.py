@@ -174,7 +174,7 @@ def new_plugin(
     typer.echo("\nNext steps:")
     typer.echo(f"  cd {target}")
     typer.echo("  python -m venv .venv && source .venv/bin/activate")
-    typer.echo("  pip install -e \".[dev]\"")
+    typer.echo('  pip install -e ".[dev]"')
     typer.echo("  pytest")
     typer.echo("  dryade plugin validate .")
     typer.echo("  dryade plugin package .")

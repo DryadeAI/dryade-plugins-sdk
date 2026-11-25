@@ -57,6 +57,7 @@ def setup_author_key(hermetic_home: Path, monkeypatch_module: pytest.MonkeyPatch
     result = subprocess.run(
         ["dryade", "plugin", "keygen"],
         capture_output=True,
+        check=False,
         text=True,
         env={**os.environ, "HOME": str(hermetic_home)},
     )
@@ -76,6 +77,7 @@ def _run_cli(args: list[str], hermetic_home: Path) -> subprocess.CompletedProces
     return subprocess.run(
         args,
         capture_output=True,
+        check=False,
         text=True,
         env={**os.environ, "HOME": str(hermetic_home)},
     )
