@@ -83,7 +83,7 @@ from dryade_plugins_sdk.testing import FakeHost
 assert isinstance(plugin, Plugin)
 host = FakeHost()
 host.load(plugin)
-print(host.registry.tools)  # ['get_current_time']
+print(list(host.registry.tools))  # ['get_current_time']
 host.shutdown()
 ```
 
