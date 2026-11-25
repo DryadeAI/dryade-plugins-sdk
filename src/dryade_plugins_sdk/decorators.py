@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from dryade_plugins_sdk.route import route
 from dryade_plugins_sdk.tool import tool
@@ -28,4 +29,4 @@ def agent(*, name: str, capability: str, framework: str = "crewai") -> Callable[
     return _wrap
 
 
-__all__ = ["tool", "route", "agent"]
+__all__ = ["agent", "route", "tool"]

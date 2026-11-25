@@ -9,9 +9,9 @@ This module has zero host-runtime imports — it is a pure contract.
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Mapping
+from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
-from typing import Any, Callable, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
 
 
 @dataclass
@@ -71,7 +71,7 @@ def collect_routes(plugin: Any) -> list[tuple[dict[str, Any], Callable[..., Any]
             continue
         try:
             attr = getattr(plugin, attr_name)
-        except Exception:
+        except Exception:  # noqa: BLE001, S112  # a raising property must not abort route collection
             continue
         if not callable(attr):
             continue
@@ -82,8 +82,8 @@ def collect_routes(plugin: Any) -> list[tuple[dict[str, Any], Callable[..., Any]
             spec = getattr(attr, "spec", None)
             if spec is not None and hasattr(spec, "path") and hasattr(spec, "method"):
                 meta = {
-                    "path": getattr(spec, "path"),
-                    "method": getattr(spec, "method"),
+                    "path": spec.path,
+                    "method": spec.method,
                     "auth_required": getattr(spec, "auth_required", True),
                     "name": getattr(spec, "name", None),
                 }

@@ -9,8 +9,9 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-from dryade_plugins_sdk.cli.cli import app
 from typer.testing import CliRunner
+
+from dryade_plugins_sdk.cli.cli import app
 
 
 @pytest.fixture

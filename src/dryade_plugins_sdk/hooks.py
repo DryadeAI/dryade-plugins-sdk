@@ -9,7 +9,8 @@ This module has zero host-runtime imports — it is a pure contract.
 
 from __future__ import annotations
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 
 def traced(name: str | None = None) -> Callable[..., Any]:
@@ -49,4 +50,4 @@ def hook(event: str) -> Callable[..., Any]:
     return _wrap
 
 
-__all__ = ["traced", "hook"]
+__all__ = ["hook", "traced"]

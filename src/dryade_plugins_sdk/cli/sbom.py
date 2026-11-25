@@ -65,6 +65,7 @@ def _run_cyclonedx(pyproject_path: Path, output_path: Path) -> bool:
             cmd,
             cwd=pyproject_path.parent,
             capture_output=True,
+            check=False,
             text=True,
             timeout=60,
         )
@@ -79,9 +80,7 @@ def _run_cyclonedx(pyproject_path: Path, output_path: Path) -> bool:
         doc = json.loads(output_path.read_text())
     except (OSError, json.JSONDecodeError):
         return False
-    if doc.get("bomFormat") != "CycloneDX":
-        return False
-    return True
+    return bool(doc.get("bomFormat") == "CycloneDX")
 
 
 def build_sbom(plugin_dir: Path, name: str, version: str) -> dict[str, Any]:
@@ -109,12 +108,8 @@ def build_sbom(plugin_dir: Path, name: str, version: str) -> dict[str, Any]:
                     # Tag the doc so consumers can tell the source apart.
                     meta = doc.setdefault("metadata", {})
                     props = meta.setdefault("properties", [])
-                    if not any(
-                        p.get("name") == "dryade:sbom-source" for p in props
-                    ):
-                        props.append(
-                            {"name": "dryade:sbom-source", "value": "cyclonedx-py"}
-                        )
+                    if not any(p.get("name") == "dryade:sbom-source" for p in props):
+                        props.append({"name": "dryade:sbom-source", "value": "cyclonedx-py"})
                     # Identify the plugin as the SBOM's top-level component so the
                     # document describes the plugin (not the build environment),
                     # consistent with the minimal-shim path.

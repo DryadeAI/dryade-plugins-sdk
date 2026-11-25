@@ -6,6 +6,8 @@ from __future__ import annotations
 def test_all_top_level_imports() -> None:
     """Every documented symbol resolves from the package root."""
     from dryade_plugins_sdk import (  # noqa: F401
+        CONTRACT_VERSION,
+        KV,
         Agent,
         AgentCapabilities,
         AgentCapability,
@@ -13,13 +15,11 @@ def test_all_top_level_imports() -> None:
         AgentExecutionError,
         AgentFramework,
         AgentResult,
-        CONTRACT_VERSION,
         Config,
         DryadePluginError,
         HashMismatchError,
         HealthCheck,
         IsolationLevel,
-        KV,
         Leash,
         ManageableComponent,
         ManifestV2,

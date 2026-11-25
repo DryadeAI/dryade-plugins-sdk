@@ -16,6 +16,7 @@ import tarfile
 from pathlib import Path
 
 import pytest
+
 from dryade_plugins_sdk.cli.cli import app
 
 _KEYS_AVAILABLE = importlib.util.find_spec("dryade_plugins_sdk.cli.keys") is not None
@@ -91,6 +92,4 @@ def test_dryadepkg_excludes_author_key_dir(
     with tarfile.open(pkg, "r:gz") as tf:
         names = tf.getnames()
         for n in names:
-            assert ".dryade-author" not in n, (
-                f"bundle must not include .dryade-author/; saw {n}"
-            )
+            assert ".dryade-author" not in n, f"bundle must not include .dryade-author/; saw {n}"

@@ -44,8 +44,7 @@ def plugin_dir(tmp_path: Path) -> Path:
         "plugin = Plugin()\n"
     )
     (pdir / "pyproject.toml").write_text(
-        '[project]\nname = "sbomproof"\nversion = "0.1.0"\n'
-        'requires-python = ">=3.11"\n'
+        '[project]\nname = "sbomproof"\nversion = "0.1.0"\nrequires-python = ">=3.11"\n'
     )
     return pdir
 

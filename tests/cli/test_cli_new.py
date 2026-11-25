@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from dryade_plugins_sdk.cli.cli import app
 
 
@@ -81,7 +82,7 @@ def test_scaffold_plugin_module_imports_only_sdk(scaffolded_plugin: Path):
     # Comment text was already scrubbed; check no actual import statements.
     for line in text.splitlines():
         stripped = line.strip()
-        if stripped.startswith("from core") or stripped.startswith("import core"):
+        if stripped.startswith(("from core", "import core")):
             pytest.fail(f"violation: scaffolded plugin imports from core: {line!r}")
 
 
@@ -184,9 +185,7 @@ def test_scaffold_no_internal_repo_references(runner, tmp_path, author_key_dir):
         if f.is_file():
             text = f.read_text(errors="ignore")
             for tok in forbidden:
-                assert tok not in text, (
-                    f"forbidden token {tok!r} leaked into scaffold file {f}"
-                )
+                assert tok not in text, f"forbidden token {tok!r} leaked into scaffold file {f}"
 
 
 # ---------------------------------------------------------------------------
