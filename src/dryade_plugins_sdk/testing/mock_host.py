@@ -65,8 +65,8 @@ class FakeHost:
         self.registry = FakeRegistry()
         # Lazy imports to keep import time short and avoid a cycle if a future
         # mock_* module ever wants to import FakeHost.
-        from dryade_plugins_sdk.testing.mock_kv import MockKV
         from dryade_plugins_sdk.testing.mock_config import MockConfig
+        from dryade_plugins_sdk.testing.mock_kv import MockKV
         from dryade_plugins_sdk.testing.mock_llm import MockLLM
 
         self.kv = MockKV()

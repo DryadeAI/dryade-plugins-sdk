@@ -42,4 +42,4 @@ class MockKV:
         # Sweep expired entries lazily, then return matching keys.
         for k in list(self._data.keys()):
             self.get(k)  # triggers eviction if expired
-        return [k for k in self._data.keys() if k.startswith(prefix)]
+        return [k for k in self._data if k.startswith(prefix)]

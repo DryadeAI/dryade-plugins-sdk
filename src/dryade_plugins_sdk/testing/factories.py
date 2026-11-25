@@ -5,7 +5,8 @@ Stdlib-only, with no dependency on the host runtime.
 
 from __future__ import annotations
 
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from dryade_plugins_sdk.plugin import Plugin
 
@@ -50,7 +51,7 @@ def build_agent(name: str, capability: str = "test") -> Any:
     """Build a stub Agent object — carries the ``_agent_meta`` marker FakeRegistry expects."""
 
     class _A:
-        _agent_meta = {"name": name, "capability": capability, "framework": "test"}
+        _agent_meta = {"name": name, "capability": capability, "framework": "test"}  # noqa: RUF012
 
     return _A()
 

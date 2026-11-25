@@ -23,7 +23,8 @@ router is composed.
 
 from __future__ import annotations
 
-from typing import Any, Callable, Literal, Protocol, runtime_checkable
+from collections.abc import Callable
+from typing import Any, Literal, Protocol, runtime_checkable
 
 from pydantic import BaseModel
 

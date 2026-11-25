@@ -192,7 +192,7 @@ __all__ = [
     "CONTRACT_VERSION",
     "compute_plugin_hash_pair",
     "get_canonical_bytes",
-    "sign_manifest",
     "load_private_key",
+    "sign_manifest",
     "verify_plugin_hash",
 ]

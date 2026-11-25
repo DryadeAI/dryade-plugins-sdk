@@ -69,9 +69,7 @@ def _should_include(rel_path: Path) -> bool:
             return False
     if parts[0] in INCLUDED_DIRS:
         return True
-    if str(rel_path) in INCLUDED_FILES:
-        return True
-    return False
+    return str(rel_path) in INCLUDED_FILES
 
 
 def build_dryadepkg(plugin_dir: Path, output_dir: Path) -> Path:

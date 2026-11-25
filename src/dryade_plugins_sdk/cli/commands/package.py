@@ -35,8 +35,7 @@ def package_plugin(
         import dryade_plugins_sdk.cli.keys  # noqa: F401
     except ImportError:
         typer.secho(
-            "Author key infrastructure not present.\n"
-            "Run `dryade plugin keygen` first.",
+            "Author key infrastructure not present.\nRun `dryade plugin keygen` first.",
             fg=typer.colors.RED,
         )
         raise typer.Exit(code=1)
